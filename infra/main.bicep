@@ -56,24 +56,269 @@ param vmUserName string
 @allowed(['pt', 'es', 'en'])
 param orchestratorMessagesLanguage string
 @description('Analyzer language used by Azure search to analyze indexes text content.')
-@allowed(['standard', 'pt-Br.microsoft', 'es.microsoft', 'ar.microsoft', 'bn.microsoft', 'bg.microsoft', 'ca.microsoft', 'zh-Hans.microsoft', 'zh-Hant.microsoft', 'hr.microsoft', 'cs.microsoft', 'da.microsoft', 'nl.microsoft', 'en.microsoft', 'et.microsoft', 'fi.microsoft', 'fr.microsoft', 'de.microsoft', 'el.microsoft', 'gu.microsoft', 'he.microsoft', 'hi.microsoft', 'hu.microsoft', 'is.microsoft', 'id.microsoft', 'it.microsoft', 'ja.microsoft', 'kn.microsoft', 'ko.microsoft', 'lv.microsoft', 'lt.microsoft', 'ml.microsoft', 'ms.microsoft', 'mr.microsoft', 'nb.microsoft', 'pl.microsoft', 'pt-Pt.microsoft', 'pa.microsoft', 'ro.microsoft', 'ru.microsoft', 'sr-cyrillic.microsoft', 'sr-latin.microsoft', 'sk.microsoft', 'sl.microsoft', 'sv.microsoft', 'ta.microsoft', 'te.microsoft', 'th.microsoft', 'tr.microsoft', 'uk.microsoft', 'ur.microsoft', 'vi.microsoft' ])
+@allowed([
+  'standard'
+  'pt-Br.microsoft'
+  'es.microsoft'
+  'ar.microsoft'
+  'bn.microsoft'
+  'bg.microsoft'
+  'ca.microsoft'
+  'zh-Hans.microsoft'
+  'zh-Hant.microsoft'
+  'hr.microsoft'
+  'cs.microsoft'
+  'da.microsoft'
+  'nl.microsoft'
+  'en.microsoft'
+  'et.microsoft'
+  'fi.microsoft'
+  'fr.microsoft'
+  'de.microsoft'
+  'el.microsoft'
+  'gu.microsoft'
+  'he.microsoft'
+  'hi.microsoft'
+  'hu.microsoft'
+  'is.microsoft'
+  'id.microsoft'
+  'it.microsoft'
+  'ja.microsoft'
+  'kn.microsoft'
+  'ko.microsoft'
+  'lv.microsoft'
+  'lt.microsoft'
+  'ml.microsoft'
+  'ms.microsoft'
+  'mr.microsoft'
+  'nb.microsoft'
+  'pl.microsoft'
+  'pt-Pt.microsoft'
+  'pa.microsoft'
+  'ro.microsoft'
+  'ru.microsoft'
+  'sr-cyrillic.microsoft'
+  'sr-latin.microsoft'
+  'sk.microsoft'
+  'sl.microsoft'
+  'sv.microsoft'
+  'ta.microsoft'
+  'te.microsoft'
+  'th.microsoft'
+  'tr.microsoft'
+  'uk.microsoft'
+  'ur.microsoft'
+  'vi.microsoft'
+])
 param searchAnalyzerName string
 @description('Language used for speech recognition in the frontend.')
-@allowed(['pt-BR', 'af-ZA', 'am-ET', 'ar-AE', 'ar-BH', 'ar-DZ', 'ar-EG', 'ar-IL', 'ar-IQ', 'ar-JO', 'ar-KW', 'ar-LB', 'ar-LY', 'ar-MA', 'ar-OM', 'ar-PS', 'ar-QA', 'ar-SA', 'ar-SY', 'ar-TN', 'ar-YE', 'az-AZ', 'bg-BG', 'bn-IN', 'bs-BA', 'ca-ES', 'cs-CZ', 'cy-GB', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-GB', 'en-GH', 'en-HK', 'en-IE', 'en-IN', 'en-KE', 'en-NG', 'en-NZ', 'en-PH', 'en-SG', 'en-TZ', 'en-US', 'en-ZA', 'es-AR', 'es-BO', 'es-CL', 'es-CO', 'es-CR', 'es-CU', 'es-DO', 'es-EC', 'es-ES', 'es-GQ', 'es-GT', 'es-HN', 'es-MX', 'es-NI', 'es-PA', 'es-PE', 'es-PR', 'es-PY', 'es-SV', 'es-US', 'es-UY', 'es-VE', 'et-EE', 'eu-ES', 'fa-IR', 'fi-FI', 'fil-PH', 'fr-BE', 'fr-CA', 'fr-CH', 'fr-FR', 'ga-IE', 'gl-ES', 'gu-IN', 'he-IL', 'hi-IN', 'hr-HR', 'hu-HU', 'hy-AM', 'id-ID', 'is-IS', 'it-CH', 'it-IT', 'ja-JP', 'jv-ID', 'ka-GE', 'kk-KZ', 'km-KH', 'kn-IN', 'ko-KR', 'lo-LA', 'lt-LT', 'lv-LV', 'mk-MK', 'ml-IN', 'mn-MN', 'mr-IN', 'ms-MY', 'mt-MT', 'my-MM', 'nb-NO', 'ne-NP', 'nl-BE', 'nl-NL', 'pl-PL', 'ps-AF', 'pt-PT', 'ro-RO', 'ru-RU', 'si-LK', 'sk-SK', 'sl-SI', 'so-SO', 'sq-AL', 'sr-RS', 'sv-SE', 'sw-KE', 'sw-TZ', 'ta-IN', 'te-IN', 'th-TH', 'tr-TR', 'uk-UA', 'uz-UZ', 'vi-VN', 'wuu-CN', 'yue-CN', 'zh-CN', 'zh-CN-shandong', 'zh-CN-sichuan', 'zh-HK', 'zh-TW', 'zu-ZA' ])
+@allowed([
+  'pt-BR'
+  'af-ZA'
+  'am-ET'
+  'ar-AE'
+  'ar-BH'
+  'ar-DZ'
+  'ar-EG'
+  'ar-IL'
+  'ar-IQ'
+  'ar-JO'
+  'ar-KW'
+  'ar-LB'
+  'ar-LY'
+  'ar-MA'
+  'ar-OM'
+  'ar-PS'
+  'ar-QA'
+  'ar-SA'
+  'ar-SY'
+  'ar-TN'
+  'ar-YE'
+  'az-AZ'
+  'bg-BG'
+  'bn-IN'
+  'bs-BA'
+  'ca-ES'
+  'cs-CZ'
+  'cy-GB'
+  'da-DK'
+  'de-AT'
+  'de-CH'
+  'de-DE'
+  'el-GR'
+  'en-AU'
+  'en-CA'
+  'en-GB'
+  'en-GH'
+  'en-HK'
+  'en-IE'
+  'en-IN'
+  'en-KE'
+  'en-NG'
+  'en-NZ'
+  'en-PH'
+  'en-SG'
+  'en-TZ'
+  'en-US'
+  'en-ZA'
+  'es-AR'
+  'es-BO'
+  'es-CL'
+  'es-CO'
+  'es-CR'
+  'es-CU'
+  'es-DO'
+  'es-EC'
+  'es-ES'
+  'es-GQ'
+  'es-GT'
+  'es-HN'
+  'es-MX'
+  'es-NI'
+  'es-PA'
+  'es-PE'
+  'es-PR'
+  'es-PY'
+  'es-SV'
+  'es-US'
+  'es-UY'
+  'es-VE'
+  'et-EE'
+  'eu-ES'
+  'fa-IR'
+  'fi-FI'
+  'fil-PH'
+  'fr-BE'
+  'fr-CA'
+  'fr-CH'
+  'fr-FR'
+  'ga-IE'
+  'gl-ES'
+  'gu-IN'
+  'he-IL'
+  'hi-IN'
+  'hr-HR'
+  'hu-HU'
+  'hy-AM'
+  'id-ID'
+  'is-IS'
+  'it-CH'
+  'it-IT'
+  'ja-JP'
+  'jv-ID'
+  'ka-GE'
+  'kk-KZ'
+  'km-KH'
+  'kn-IN'
+  'ko-KR'
+  'lo-LA'
+  'lt-LT'
+  'lv-LV'
+  'mk-MK'
+  'ml-IN'
+  'mn-MN'
+  'mr-IN'
+  'ms-MY'
+  'mt-MT'
+  'my-MM'
+  'nb-NO'
+  'ne-NP'
+  'nl-BE'
+  'nl-NL'
+  'pl-PL'
+  'ps-AF'
+  'pt-PT'
+  'ro-RO'
+  'ru-RU'
+  'si-LK'
+  'sk-SK'
+  'sl-SI'
+  'so-SO'
+  'sq-AL'
+  'sr-RS'
+  'sv-SE'
+  'sw-KE'
+  'sw-TZ'
+  'ta-IN'
+  'te-IN'
+  'th-TH'
+  'tr-TR'
+  'uk-UA'
+  'uz-UZ'
+  'vi-VN'
+  'wuu-CN'
+  'yue-CN'
+  'zh-CN'
+  'zh-CN-shandong'
+  'zh-CN-sichuan'
+  'zh-HK'
+  'zh-TW'
+  'zu-ZA'
+])
 param speechRecognitionLanguage string
 @description('Language used for speech synthesis in the frontend.')
-@allowed(['pt-BR', 'es-ES', 'es-MX','ar-EG', 'ar-SA', 'ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'en-AU', 'en-CA', 'en-GB', 'en-HK', 'en-IE', 'en-IN', 'en-US', 'es-ES', 'es-MX', 'fi-FI', 'fr-BE', 'fr-CA', 'fr-CH', 'fr-FR', 'hi-IN', 'hu-HU', 'id-ID', 'it-IT', 'ja-JP', 'ko-KR', 'nb-NO', 'nl-BE', 'nl-NL', 'pl-PL', 'pt-PT', 'ru-RU', 'sv-SE', 'th-TH', 'tr-TR', 'zh-CN', 'zh-HK', 'zh-TW'])
+@allowed([
+  'pt-BR'
+  'es-ES'
+  'es-MX'
+  'ar-EG'
+  'ar-SA'
+  'ca-ES'
+  'cs-CZ'
+  'da-DK'
+  'de-AT'
+  'de-CH'
+  'de-DE'
+  'en-AU'
+  'en-CA'
+  'en-GB'
+  'en-HK'
+  'en-IE'
+  'en-IN'
+  'en-US'
+  'es-ES'
+  'es-MX'
+  'fi-FI'
+  'fr-BE'
+  'fr-CA'
+  'fr-CH'
+  'fr-FR'
+  'hi-IN'
+  'hu-HU'
+  'id-ID'
+  'it-IT'
+  'ja-JP'
+  'ko-KR'
+  'nb-NO'
+  'nl-BE'
+  'nl-NL'
+  'pl-PL'
+  'pt-PT'
+  'ru-RU'
+  'sv-SE'
+  'th-TH'
+  'tr-TR'
+  'zh-CN'
+  'zh-HK'
+  'zh-TW'
+])
 param speechSynthesisLanguage string
 @description('Voice used for speech synthesis in the frontend.')
-@allowed([ 'pt-BR-FranciscaNeural', 'es-MX-BeatrizNeural', 'en-US-RyanMultilingualNeural', 'de-DE-AmalaNeural', 'fr-FR-DeniseNeural'])
+@allowed([
+  'pt-BR-FranciscaNeural'
+  'es-MX-BeatrizNeural'
+  'en-US-RyanMultilingualNeural'
+  'de-DE-AmalaNeural'
+  'fr-FR-DeniseNeural'
+])
 param speechSynthesisVoiceName string
 
 // openai
 @description('GPT model used to answer user questions. Don\'t forget to check region availability.')
-@allowed([ 'gpt-35-turbo','gpt-35-turbo-16k', 'gpt-4', 'gpt-4-32k' ])
+@allowed(['gpt-35-turbo', 'gpt-35-turbo-16k', 'gpt-4', 'gpt-4-32k'])
 param chatGptModelName string
 @description('GPT model version.')
-@allowed([ '0613', '1106', '1106-Preview', '0125-preview'])
+@allowed(['0613', '1106', '1106-Preview', '0125-preview'])
 param chatGptModelVersion string
 @description('GPT model deployment name.')
 param chatGptDeploymentName string = 'chat'
@@ -82,10 +327,10 @@ param chatGptDeploymentName string = 'chat'
 @maxValue(20)
 param chatGptDeploymentCapacity int = 20
 @description('Embeddings model used to generate vector embeddings. Don\'t forget to check region availability.')
-@allowed([ 'text-embedding-ada-002' ])
+@allowed(['text-embedding-ada-002'])
 param embeddingsModelName string = 'text-embedding-ada-002'
 @description('Embeddings model version.')
-@allowed([ '2' ])
+@allowed(['2'])
 param embeddingsModelVersion string = '2'
 @description('Embeddings model deployment name.')
 param embeddingsDeploymentName string = 'text-embedding-ada-002'
@@ -94,26 +339,28 @@ param embeddingsDeploymentName string = 'text-embedding-ada-002'
 @maxValue(240)
 param embeddingsDeploymentCapacity int = 20
 @description('Azure OpenAI API version.')
-@allowed([ '2023-05-15', '2024-02-15-preview'])
+@allowed(['2023-05-15', '2024-02-15-preview'])
 param openaiApiVersion string
 @description('Enables LLM monitoring to generate conversation metrics.')
 @allowed([true, false])
 param chatGptLlmMonitoring bool = true
 
 //docint
-var docintApiVersion = (location == 'eastus' || location == 'westus2' || location == 'westeurope') ? '2023-10-31-preview' : '2023-07-31'
+var docintApiVersion = (location == 'eastus' || location == 'westus2' || location == 'westeurope')
+  ? '2023-10-31-preview'
+  : '2023-07-31'
 
 // search
 @description('Orchestrator supports the following retrieval approaches: term, vector, hybrid(term + vector search), or use oyd feature of Azure OpenAI.')
-@allowed(['term', 'vector', 'hybrid', 'oyd' ])
+@allowed(['term', 'vector', 'hybrid', 'oyd'])
 param retrievalApproach string = 'hybrid'
 @description('Use semantic reranking on top of search results?.')
 @allowed([true, false])
 param useSemanticReranking bool = true
-var searchServiceSkuName = networkIsolation?'standard2':'standard'
+var searchServiceSkuName = networkIsolation ? 'standard2' : 'standard'
 @description('Search index name.')
 var searchIndex = 'ragindex'
-@allowed([ '2023-11-01', '2023-10-01-Preview' ])
+@allowed(['2023-11-01', '2023-10-01-Preview'])
 // Requires version 2023-10-01-Preview or higher for indexProjections and MIS authResourceId.
 param searchApiVersion string = '2023-10-01-Preview'
 
@@ -165,10 +412,14 @@ param azureAppServiceName string = ''
 var appServiceName = !empty(azureAppServiceName) ? azureAppServiceName : 'webgpt0-${resourceToken}'
 @description('Orchestrator Function Name. Use your own name convention or leave as it is to generate a random name.')
 param azureOrchestratorFunctionAppName string = ''
-var orchestratorFunctionAppName = !empty(azureOrchestratorFunctionAppName) ? azureOrchestratorFunctionAppName : 'fnorch0-${resourceToken}'
+var orchestratorFunctionAppName = !empty(azureOrchestratorFunctionAppName)
+  ? azureOrchestratorFunctionAppName
+  : 'fnorch0-${resourceToken}'
 @description('Data Ingestion Function Name. Use your own name convention or leave as it is to generate a random name.')
 param azureDataIngestionFunctionAppName string = ''
-var dataIngestionFunctionAppName = !empty(azureDataIngestionFunctionAppName) ? azureDataIngestionFunctionAppName : 'fninges0-${resourceToken}'
+var dataIngestionFunctionAppName = !empty(azureDataIngestionFunctionAppName)
+  ? azureDataIngestionFunctionAppName
+  : 'fninges0-${resourceToken}'
 @description('Search Service Name. Use your own name convention or leave as it is to generate a random name.')
 param azureSearchServiceName string = ''
 var searchServiceName = !empty(azureSearchServiceName) ? azureSearchServiceName : 'search0-${resourceToken}'
@@ -177,7 +428,14 @@ param azureOpenAiServiceName string = ''
 var openAiServiceName = !empty(azureOpenAiServiceName) ? azureOpenAiServiceName : 'oai0-${resourceToken}'
 @description('Virtual network name if using network isolation. Use your own name convention or leave as it is to generate a random name.')
 param azureVnetName string = ''
+// Add these parameters with the other service names
+@description('PostgreSQL Server Name. Use your own name convention or leave as it is to generate a random name.')
+param azurePostgresServerName string = ''
+var postgresServerName = !empty(azurePostgresServerName) ? azurePostgresServerName : 'psql0-${resourceToken}'
 
+@description('PostgreSQL Database Name. Use your own name convention or leave as it is to generate a random name.')
+param azurePostgresDatabaseName string = ''
+var postgresDatabaseName = !empty(azurePostgresDatabaseName) ? azurePostgresDatabaseName : 'db0-${resourceToken}'
 
 //Web App
 @description('Stripe api key')
@@ -218,12 +476,15 @@ var aiSearchApiKey = !empty(azureAiSearchApiKey) ? azureAiSearchApiKey : ''
 param azureOpenAiApiKey string = ''
 var openAiApiKey = !empty(azureOpenAiApiKey) ? azureOpenAiApiKey : ''
 
-
-
 var vnetName = !empty(azureVnetName) ? azureVnetName : 'aivnet0-${resourceToken}'
 
 var orchestratorEndpoint = 'https://${orchestratorFunctionAppName}.azurewebsites.net/api/orc'
 var orchestratorUri = 'https://${orchestratorFunctionAppName}.azurewebsites.net'
+
+// Add these parameters at the top of your main.bicep
+param administratorLogin string = 'postgresadmin'
+@secure()
+param administratorLoginPassword string
 
 // main
 
@@ -255,7 +516,7 @@ module blobDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolati
   name: 'blob-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.blob.core.windows.net' 
+    dnsZoneName: 'privatelink.blob.core.windows.net'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -265,7 +526,7 @@ module documentsDnsZone './core/network/private-dns-zones.bicep' = if (networkIs
   name: 'documents-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.documents.azure.com' 
+    dnsZoneName: 'privatelink.documents.azure.com'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -275,7 +536,7 @@ module vaultDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolat
   name: 'vault-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.vaultcore.azure.net' 
+    dnsZoneName: 'privatelink.vaultcore.azure.net'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -285,7 +546,7 @@ module websitesDnsZone './core/network/private-dns-zones.bicep' = if (networkIso
   name: 'websites-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.azurewebsites.net' 
+    dnsZoneName: 'privatelink.azurewebsites.net'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -295,7 +556,7 @@ module cognitiveservicesDnsZone './core/network/private-dns-zones.bicep' = if (n
   name: 'cognitiveservices-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.cognitiveservices.azure.com' 
+    dnsZoneName: 'privatelink.cognitiveservices.azure.com'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -305,7 +566,7 @@ module openaiDnsZone './core/network/private-dns-zones.bicep' = if (networkIsola
   name: 'openai-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.openai.azure.com' 
+    dnsZoneName: 'privatelink.openai.azure.com'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -315,7 +576,18 @@ module searchDnsZone './core/network/private-dns-zones.bicep' = if (networkIsola
   name: 'searchs-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink.search.windows.net' 
+    dnsZoneName: 'privatelink.search.windows.net'
+    tags: tags
+    virtualNetworkName: vnet.outputs.name
+  }
+}
+
+// Add PostgreSQL DNS zone
+module postgresDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolation) {
+  name: 'postgres-dnzones'
+  scope: resourceGroup
+  params: {
+    dnsZoneName: 'private.postgres.database.azure.com'
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -355,16 +627,16 @@ module storage './core/storage/storage-account.bicep' = {
     name: storageAccountName
     location: location
     tags: tags
-    publicNetworkAccess: networkIsolation?'Disabled':'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     allowBlobPublicAccess: false // Disable anonymous access
-    containers: [{name:containerName, publicAccess: 'None'}]
+    containers: [{ name: containerName, publicAccess: 'None' }]
     keyVaultName: keyVault.outputs.name
     secretName: 'storageConnectionString'
     deleteRetentionPolicy: {
       enabled: true
       days: 7
     }
-  }  
+  }
 }
 
 module storagepe './core/network/private-endpoint.bicep' = if (networkIsolation) {
@@ -372,15 +644,14 @@ module storagepe './core/network/private-endpoint.bicep' = if (networkIsolation)
   scope: resourceGroup
   params: {
     location: location
-    name:'stragpe0${resourceToken}'
+    name: 'stragpe0${resourceToken}'
     tags: tags
     subnetId: vnet.outputs.aiSubId
     serviceId: storage.outputs.id
     groupIds: ['blob']
-    dnsZoneId: networkIsolation?blobDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? blobDnsZone.outputs.id : ''
   }
 }
-
 
 // Database
 module cosmosAccount './core/db/cosmos.bicep' = {
@@ -388,13 +659,13 @@ module cosmosAccount './core/db/cosmos.bicep' = {
   scope: resourceGroup
   params: {
     accountName: dbAccountName
-    publicNetworkAccess: networkIsolation?'Disabled':'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     location: location
     containerName: 'conversations'
     databaseName: dbDatabaseName
     tags: tags
     secretName: 'azureDBkey'
-    keyVaultName: keyVault.outputs.name    
+    keyVaultName: keyVault.outputs.name
   }
 }
 
@@ -408,9 +679,45 @@ module cosmospe './core/network/private-endpoint.bicep' = if (networkIsolation) 
     subnetId: vnet.outputs.aiSubId
     serviceId: cosmosAccount.outputs.id
     groupIds: ['Sql']
-    dnsZoneId: networkIsolation?documentsDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? documentsDnsZone.outputs.id : ''
   }
 }
+
+// Add PostgreSQL Server module
+
+module postgresDatabase './core/db/postgresql.bicep' = {
+  name: 'postgresdatabase'
+  scope: resourceGroup
+  params: {
+    name: postgresServerName
+    location: location
+    tags: tags
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    databaseName: postgresDatabaseName
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
+    secretName: 'postgresDBPassword'
+    keyVaultName: keyVault.outputs.name
+    sku: {
+      name: 'Standard_B1ms'
+      tier: 'Burstable'
+    }
+  }
+}
+
+// module postgrespe './core/network/private-endpoint.bicep' = if (networkIsolation) {
+//   name: 'postgrespe'
+//   scope: resourceGroup
+//   params: {
+//     location: location
+//     name: 'psqlpe0${resourceToken}'
+//     tags: tags
+//     subnetId: vnet.outputs.aiSubId
+//     serviceId: postgresDatabase.outputs.id
+//     groupIds: ['postgresqlServer']
+//     dnsZoneId: networkIsolation ? postgresDnsZone.outputs.id : ''
+//   }
+// }
 
 // Store secrets in a keyvault
 module keyVault './core/security/keyvault.bicep' = {
@@ -419,7 +726,7 @@ module keyVault './core/security/keyvault.bicep' = {
   params: {
     name: keyVaultName
     location: location
-    publicNetworkAccess: networkIsolation?'Disabled':'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     tags: tags
     principalId: principalId
     // this is the named of the secret to store the vm password in keyvault. It matches what is used on main.parameters.json
@@ -433,12 +740,12 @@ module keyvaultpe './core/network/private-endpoint.bicep' = if (networkIsolation
   scope: resourceGroup
   params: {
     location: location
-    name:'kvpe0${resourceToken}'
+    name: 'kvpe0${resourceToken}'
     tags: tags
     subnetId: vnet.outputs.aiSubId
     serviceId: keyVault.outputs.id
     groupIds: ['Vault']
-    dnsZoneId: networkIsolation?vaultDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? vaultDnsZone.outputs.id : ''
   }
 }
 
@@ -488,8 +795,8 @@ module orchestrator './core/host/functions.bicep' = {
     functionAppScaleLimit: 2
     numberOfWorkers: 2
     minimumElasticInstanceCount: 1
-    allowedOrigins: [ '*' ]    
-    appSettings:[
+    allowedOrigins: ['*']
+    appSettings: [
       {
         name: 'AZURE_AI_SEARCH_API_KEY'
         value: aiSearchApiKey
@@ -501,7 +808,6 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'AZURE_AI_SEARCH_SERVICE_NAME'
         value: searchServiceName
-
       }
       {
         name: 'AZURE_OPENAI_API_KEY'
@@ -561,11 +867,11 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'AZURE_DB_NAME'
         value: dbDatabaseName
-      }      
+      }
       {
         name: 'AZURE_KEY_VAULT_NAME'
         value: keyVault.outputs.name
-      }      
+      }
       {
         name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
@@ -581,7 +887,7 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'AZURE_SEARCH_USE_SEMANTIC'
         value: useSemanticReranking
-      }      
+      }
       {
         name: 'AZURE_SEARCH_API_VERSION'
         value: searchApiVersion
@@ -593,7 +899,7 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'AZURE_OPENAI_CHATGPT_MODEL'
         value: chatGptModelName
-      }      
+      }
       {
         name: 'AZURE_OPENAI_CHATGPT_DEPLOYMENT'
         value: chatGptDeploymentName
@@ -603,17 +909,13 @@ module orchestrator './core/host/functions.bicep' = {
         value: chatGptLlmMonitoring
       }
       {
-        name: 'AZURE_OPENAI_API_VERSION'
-        value: openaiApiVersion
-      }      
-      {
         name: 'AZURE_OPENAI_LOAD_BALANCING'
         value: false
-      }               
+      }
       {
         name: 'AZURE_OPENAI_EMBEDDING_MODEL'
         value: embeddingsModelName
-      }      
+      }
       {
         name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT'
         value: embeddingsDeploymentName
@@ -637,8 +939,8 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'LOGLEVEL'
         value: 'INFO'
-      }                         
-    ]  
+      }
+    ]
   }
 }
 
@@ -652,7 +954,7 @@ module orchestratorPe './core/network/private-endpoint.bicep' = if (networkIsola
     subnetId: vnet.outputs.aiSubId
     serviceId: orchestrator.outputs.id
     groupIds: ['sites']
-    dnsZoneId: networkIsolation?websitesDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? websitesDnsZone.outputs.id : ''
   }
 }
 
@@ -664,7 +966,7 @@ module orchestratorKeyVaultAccess './core/security/keyvault-access.bicep' = {
     keyVaultName: keyVault.outputs.name
     principalId: orchestrator.outputs.identityPrincipalId
   }
-} 
+}
 
 // Give the orchestrator access to Cosmos
 module orchestratorCosmosAccess './core/security/cosmos-access.bicep' = {
@@ -674,7 +976,7 @@ module orchestratorCosmosAccess './core/security/cosmos-access.bicep' = {
     principalId: orchestrator.outputs.identityPrincipalId
     accountName: cosmosAccount.outputs.name
   }
-} 
+}
 
 // Give the orchestrator access to AOAI
 module orchestratorOaiAccess './core/security/openai-access.bicep' = {
@@ -684,10 +986,9 @@ module orchestratorOaiAccess './core/security/openai-access.bicep' = {
     principalId: orchestrator.outputs.identityPrincipalId
     openaiAccountName: openAi.outputs.name
   }
-} 
+}
 
-
-module frontEnd  'core/host/appservice.bicep'  = {
+module frontEnd 'core/host/appservice.bicep' = {
   name: 'frontend'
   scope: resourceGroup
   params: {
@@ -702,7 +1003,7 @@ module frontEnd  'core/host/appservice.bicep'  = {
     runtimeName: 'python'
     runtimeVersion: '3.10'
     scmDoBuildDuringDeployment: true
-    basicPublishingCredentials: networkIsolation?true:false
+    basicPublishingCredentials: networkIsolation ? true : false
     appSettings: [
       {
         name: 'STRIPE_API_KEY'
@@ -743,7 +1044,7 @@ module frontEnd  'core/host/appservice.bicep'  = {
       {
         name: 'SPEECH_SYNTHESIS_LANGUAGE'
         value: speechSynthesisLanguage
-      }      
+      }
       {
         name: 'SPEECH_RECOGNITION_LANGUAGE'
         value: speechRecognitionLanguage
@@ -771,13 +1072,41 @@ module frontEnd  'core/host/appservice.bicep'  = {
       {
         name: 'STORAGE_ACCOUNT'
         value: storageAccountName
-      } 
+      }
+      {
+        name: 'DB_HOST'
+        value: postgresDatabase.outputs.serverFullyQualifiedDomainName
+      }
+      {
+        name: 'DB_NAME'
+        value: postgresDatabase.outputs.databaseName
+      }
+      {
+        name: 'DB_USER'
+        value: administratorLogin
+      }
+      {
+        name: 'DB_PASSWORD'
+        value: '@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/postgresDBPassword)'
+      }
+      {
+        name: 'DB_PORT'
+        value: '5432'
+      }
+      {
+        name: 'SQLALCHEMY_DATABASE_URI'
+        value: 'postgresql://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/postgresDBPassword)@${postgresDatabase.outputs.serverFullyQualifiedDomainName}:5432/${postgresDatabase.outputs.databaseName}'
+      }
       {
         name: 'LOGLEVEL'
         value: 'INFO'
-      } 
+      }
     ]
   }
+  dependsOn: [
+    postgresDatabase
+    // postgrespe
+  ]
 }
 
 module frontendPe './core/network/private-endpoint.bicep' = if (networkIsolation) {
@@ -790,7 +1119,7 @@ module frontendPe './core/network/private-endpoint.bicep' = if (networkIsolation
     subnetId: vnet.outputs.aiSubId
     serviceId: frontEnd.outputs.id
     groupIds: ['sites']
-    dnsZoneId: networkIsolation?websitesDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? websitesDnsZone.outputs.id : ''
   }
 }
 
@@ -812,6 +1141,19 @@ module appserviceStorageAccountAccess './core/security/blobstorage-access.bicep'
     storageAccountName: storage.outputs.name
     principalId: frontEnd.outputs.identityPrincipalId
   }
+}
+
+// Give the App Service access to PostgreSQL
+module appservicePostgresAccess './core/security/postgresql-access.bicep' = {
+  name: 'appservice-postgresql-access'
+  scope: resourceGroup
+  params: {
+    postgresServerName: postgresDatabase.outputs.name
+    principalId: frontEnd.outputs.identityPrincipalId
+  }
+  dependsOn: [
+    postgresDatabase
+  ]
 }
 
 // Give the App Service access to Orchestrator Function
@@ -840,11 +1182,11 @@ module dataIngestion './core/host/functions.bicep' = {
     appInsightsInstrumentationKey: appInsights.outputs.instrumentationKey
     tags: union(tags, { 'azd-service-name': 'dataIngest' })
     alwaysOn: true
-    allowedOrigins: [ '*' ]
+    allowedOrigins: ['*']
     functionAppScaleLimit: 1
     minimumElasticInstanceCount: 1
     numberOfWorkers: 1
-    appSettings:[
+    appSettings: [
       {
         name: 'DOCINT_API_VERSION'
         value: docintApiVersion
@@ -853,7 +1195,7 @@ module dataIngestion './core/host/functions.bicep' = {
         name: 'AZURE_KEY_VAULT_NAME'
         value: keyVault.outputs.name
       }
-      {      
+      {
         name: 'FUNCTION_APP_NAME'
         value: dataIngestionFunctionAppName
       }
@@ -864,7 +1206,7 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name: 'SEARCH_INDEX_NAME'
         value: searchIndex
-      } 
+      }
       {
         name: 'SEARCH_ANALYZER_NAME'
         value: searchAnalyzerName
@@ -928,7 +1270,7 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
         value: 'true'
-      }   
+      }
       {
         name: 'AzureWebJobsFeatureFlags'
         value: 'EnableWorkerIndexing'
@@ -936,8 +1278,8 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name: 'LOGLEVEL'
         value: 'INFO'
-      }       
-    ]  
+      }
+    ]
   }
 }
 
@@ -971,7 +1313,7 @@ module ingestionPe './core/network/private-endpoint.bicep' = if (networkIsolatio
     subnetId: vnet.outputs.aiSubId
     serviceId: dataIngestion.outputs.id
     groupIds: ['sites']
-    dnsZoneId: networkIsolation?websitesDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? websitesDnsZone.outputs.id : ''
   }
 }
 
@@ -981,14 +1323,14 @@ module cognitiveServices 'core/ai/cognitiveservices.bicep' = {
   params: {
     name: cognitiveServiceName
     location: location
-    publicNetworkAccess: networkIsolation?'Disabled':'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     kind: 'CognitiveServices'
     tags: tags
     sku: {
       name: 'S0'
     }
-    secretsNames: { 
-      secretName01: 'formRecKey' 
+    secretsNames: {
+      secretName01: 'formRecKey'
       secretName02: 'speechKey'
     }
     keyVaultName: keyVault.outputs.name
@@ -1005,10 +1347,9 @@ module cognitiveServicesPe './core/network/private-endpoint.bicep' = if (network
     subnetId: vnet.outputs.aiSubId
     serviceId: cognitiveServices.outputs.id
     groupIds: ['account']
-    dnsZoneId: networkIsolation?cognitiveservicesDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? cognitiveservicesDnsZone.outputs.id : ''
   }
 }
-
 
 module openAi 'core/ai/cognitiveservices.bicep' = {
   name: 'openai'
@@ -1016,15 +1357,15 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   params: {
     name: openAiServiceName
     location: location
-    publicNetworkAccess: networkIsolation?'Disabled':'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     tags: tags
     sku: {
-      name: 'S0' 
+      name: 'S0'
     }
-    secretsNames: { 
+    secretsNames: {
       secretName01: 'azureOpenAIKey'
     }
-    keyVaultName: keyVault.outputs.name    
+    keyVaultName: keyVault.outputs.name
     deployments: [
       {
         name: chatGptDeploymentName
@@ -1049,7 +1390,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: 'Standard'
           capacity: embeddingsDeploymentCapacity
         }
-      }      
+      }
     ]
   }
 }
@@ -1064,7 +1405,7 @@ module openAiPe './core/network/private-endpoint.bicep' = if (networkIsolation) 
     subnetId: vnet.outputs.aiSubId
     serviceId: openAi.outputs.id
     groupIds: ['account']
-    dnsZoneId: networkIsolation?openaiDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? openaiDnsZone.outputs.id : ''
   }
 }
 
@@ -1076,7 +1417,7 @@ module searchService 'core/search/search-services.bicep' = {
     location: location
     secretName: 'azureSearchKey'
     keyVaultName: keyVault.outputs.name
-    publicNetworkAccess: networkIsolation?'Disabled':'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     tags: tags
     authOptions: {
       aadOrApiKey: {
@@ -1094,10 +1435,10 @@ module searchStoragePrivatelink 'core/search/search-private-link.bicep' = if (ne
   name: 'searchStoragePrivatelink'
   scope: resourceGroup
   params: {
-   name: '${searchServiceName}-storagelink'
-   searchName: searchServiceName
-   resourceId: storage.outputs.id
-   groupId: 'blob'
+    name: '${searchServiceName}-storagelink'
+    searchName: searchServiceName
+    resourceId: storage.outputs.id
+    groupId: 'blob'
   }
 }
 
@@ -1105,9 +1446,9 @@ module searchFuncAppPrivatelink 'core/search/search-private-link.bicep' = if (ne
   name: 'searchFuncAppPrivatelink'
   scope: resourceGroup
   params: {
-   name: '${searchServiceName}-funcapplink'
-   searchName: searchServiceName
-   resourceId: dataIngestion.outputs.id
+    name: '${searchServiceName}-funcapplink'
+    searchName: searchServiceName
+    resourceId: dataIngestion.outputs.id
     groupId: 'sites'
   }
 }
@@ -1122,7 +1463,7 @@ module searchPe './core/network/private-endpoint.bicep' = if (networkIsolation) 
     subnetId: vnet.outputs.aiSubId
     serviceId: searchService.outputs.id
     groupIds: ['searchService']
-    dnsZoneId: networkIsolation?searchDnsZone.outputs.id:''
+    dnsZoneId: networkIsolation ? searchDnsZone.outputs.id : ''
   }
 }
 
@@ -1157,3 +1498,21 @@ output AZURE_OPEN_AI_SERVICE_NAME string = azureOpenAiServiceName
 output AZURE_VNET_NAME string = azureVnetName
 
 output AZURE_SEARCH_USE_MIS bool = azureSearchUseMIS
+
+// PostgreSQL operational outputs
+output AZURE_POSTGRES_SERVER_NAME string = postgresDatabase.outputs.name
+output AZURE_POSTGRES_SERVER_FQDN string = postgresDatabase.outputs.serverFullyQualifiedDomainName
+output AZURE_POSTGRES_DATABASE_NAME string = postgresDatabase.outputs.databaseName
+
+// Set input params as outputs to persist the selection
+output AZURE_POSTGRES_SERVER_NAME_PARAM string = azurePostgresServerName
+output AZURE_POSTGRES_DATABASE_NAME_PARAM string = azurePostgresDatabaseName
+
+// Connection string related outputs
+output AZURE_POSTGRES_CONNECTION_STRING_SECRET_NAME string = 'postgresDBPassword'
+output AZURE_POSTGRES_ADMIN_USER string = administratorLogin
+output AZURE_POSTGRES_HOST string = postgresDatabase.outputs.serverFullyQualifiedDomainName
+output AZURE_POSTGRES_PORT string = '5432'
+
+// Network related outputs
+output AZURE_POSTGRES_PRIVATE_ENDPOINT_NAME string = networkIsolation ? 'psqlpe0${resourceToken}' : ''

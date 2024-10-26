@@ -25,7 +25,7 @@
     },
     "azureSearchUseMIS": {
       "value": "${AZURE_SEARCH_USE_MIS}"
-    },    
+    },
     "chatGptModelName": {
       "value": "gpt-35-turbo-16k"
     },
@@ -89,7 +89,24 @@
     "azureVnetName": {
       "value": "${AZURE_VNET_NAME}"
     },
-    "deploymentTags":{
+
+    "azurePostgresServerName": {
+      "value": "${AZURE_POSTGRES_SERVER_NAME=}"
+    },
+
+    "azurePostgresDatabaseName": {
+      "value": "${AZURE_POSTGRES_DATABASE_NAME=}"
+    },
+
+    "administratorLogin": {
+      "value": "${AZURE_POSTGRES_ADMIN_USER=postgresadmin}"
+    },
+
+    "administratorLoginPassword": {
+      "value": "${AZURE_POSTGRES_ADMIN_PASSWORD=}"
+    },
+
+    "deploymentTags": {
       "value": {}
     }
   }
