@@ -26,17 +26,6 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
     storage: {
       storageSizeGB: 32
     }
-    backup: {
-      backupRetentionDays: 7
-      geoRedundantBackup: 'Disabled'
-    }
-    network: {
-      delegatedSubnetResourceId: '' // Will be handled by private endpoint
-      privateDnsZoneArmResourceId: ''
-    }
-    highAvailability: {
-      mode: 'Disabled'
-    }
   }
 }
 

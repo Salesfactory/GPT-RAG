@@ -428,14 +428,6 @@ param azureOpenAiServiceName string = ''
 var openAiServiceName = !empty(azureOpenAiServiceName) ? azureOpenAiServiceName : 'oai0-${resourceToken}'
 @description('Virtual network name if using network isolation. Use your own name convention or leave as it is to generate a random name.')
 param azureVnetName string = ''
-// Add these parameters with the other service names
-@description('PostgreSQL Server Name. Use your own name convention or leave as it is to generate a random name.')
-param azurePostgresServerName string = ''
-var postgresServerName = !empty(azurePostgresServerName) ? azurePostgresServerName : 'psql0-${resourceToken}'
-
-@description('PostgreSQL Database Name. Use your own name convention or leave as it is to generate a random name.')
-param azurePostgresDatabaseName string = ''
-var postgresDatabaseName = !empty(azurePostgresDatabaseName) ? azurePostgresDatabaseName : 'db0-${resourceToken}'
 
 //Web App
 @description('Stripe api key')
@@ -481,8 +473,17 @@ var vnetName = !empty(azureVnetName) ? azureVnetName : 'aivnet0-${resourceToken}
 var orchestratorEndpoint = 'https://${orchestratorFunctionAppName}.azurewebsites.net/api/orc'
 var orchestratorUri = 'https://${orchestratorFunctionAppName}.azurewebsites.net'
 
-// Add these parameters at the top of your main.bicep
-param administratorLogin string = 'postgresadmin'
+//SQL Server parameters
+@description('SQL Server Name')
+param azureSqlServerName string = ''
+var sqlServerName = !empty(azureSqlServerName) ? azureSqlServerName : 'sql0-${resourceToken}'
+
+@description('SQL Database Name')
+param azureSqlDatabaseName string = ''
+var sqlDatabaseName = !empty(azureSqlDatabaseName) ? azureSqlDatabaseName : 'db0-${resourceToken}'
+
+@description('SQL Server administrator login')
+param administratorLogin string = 'sqladmin'
 @secure()
 param administratorLoginPassword string
 
@@ -582,12 +583,11 @@ module searchDnsZone './core/network/private-dns-zones.bicep' = if (networkIsola
   }
 }
 
-// Add PostgreSQL DNS zone
-module postgresDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolation) {
-  name: 'postgres-dnzones'
+module sqlDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolation) {
+  name: 'sql-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'private.postgres.database.azure.com'
+    dnsZoneName: 'privatelink${environment().suffixes.sqlServerHostname}' // This is the correct way
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -683,41 +683,37 @@ module cosmospe './core/network/private-endpoint.bicep' = if (networkIsolation) 
   }
 }
 
-// Add PostgreSQL Server module
+// SQL Server module
 
-module postgresDatabase './core/db/postgresql.bicep' = {
-  name: 'postgresdatabase'
+module sqlDatabase './core/db/sqlserver.bicep' = {
+  name: 'sqldatabase'
   scope: resourceGroup
   params: {
-    name: postgresServerName
+    name: sqlServerName
     location: location
     tags: tags
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    databaseName: postgresDatabaseName
+    databaseName: sqlDatabaseName
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
-    secretName: 'postgresDBPassword'
+    secretName: 'sqlDBPassword'
     keyVaultName: keyVault.outputs.name
-    sku: {
-      name: 'Standard_B1ms'
-      tier: 'Burstable'
-    }
   }
 }
 
-// module postgrespe './core/network/private-endpoint.bicep' = if (networkIsolation) {
-//   name: 'postgrespe'
-//   scope: resourceGroup
-//   params: {
-//     location: location
-//     name: 'psqlpe0${resourceToken}'
-//     tags: tags
-//     subnetId: vnet.outputs.aiSubId
-//     serviceId: postgresDatabase.outputs.id
-//     groupIds: ['postgresqlServer']
-//     dnsZoneId: networkIsolation ? postgresDnsZone.outputs.id : ''
-//   }
-// }
+module sqlpe './core/network/private-endpoint.bicep' = if (networkIsolation) {
+  name: 'sqlpe'
+  scope: resourceGroup
+  params: {
+    location: location
+    name: 'sqlpe0${resourceToken}'
+    tags: tags
+    subnetId: vnet.outputs.aiSubId
+    serviceId: sqlDatabase.outputs.id
+    groupIds: ['sqlServer']
+    dnsZoneId: networkIsolation ? sqlDnsZone.outputs.id : ''
+  }
+}
 
 // Store secrets in a keyvault
 module keyVault './core/security/keyvault.bicep' = {
@@ -1075,11 +1071,11 @@ module frontEnd 'core/host/appservice.bicep' = {
       }
       {
         name: 'DB_HOST'
-        value: postgresDatabase.outputs.serverFullyQualifiedDomainName
+        value: sqlDatabase.outputs.serverFullyQualifiedDomainName
       }
       {
         name: 'DB_NAME'
-        value: postgresDatabase.outputs.databaseName
+        value: sqlDatabase.outputs.databaseName
       }
       {
         name: 'DB_USER'
@@ -1087,15 +1083,15 @@ module frontEnd 'core/host/appservice.bicep' = {
       }
       {
         name: 'DB_PASSWORD'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/postgresDBPassword)'
+        value: '@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/sqlDBPassword)'
       }
       {
         name: 'DB_PORT'
-        value: '5432'
+        value: '1433' // SQL Server port
       }
       {
         name: 'SQLALCHEMY_DATABASE_URI'
-        value: 'postgresql://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/postgresDBPassword)@${postgresDatabase.outputs.serverFullyQualifiedDomainName}:5432/${postgresDatabase.outputs.databaseName}'
+        value: 'mssql+pyodbc://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/sqlDBPassword)@${sqlDatabase.outputs.serverFullyQualifiedDomainName}:1433/${sqlDatabase.outputs.databaseName}?driver=ODBC+Driver+17+for+SQL+Server'
       }
       {
         name: 'LOGLEVEL'
@@ -1104,8 +1100,7 @@ module frontEnd 'core/host/appservice.bicep' = {
     ]
   }
   dependsOn: [
-    postgresDatabase
-    // postgrespe
+    sqlDatabase
   ]
 }
 
@@ -1142,17 +1137,16 @@ module appserviceStorageAccountAccess './core/security/blobstorage-access.bicep'
     principalId: frontEnd.outputs.identityPrincipalId
   }
 }
-
-// Give the App Service access to PostgreSQL
-module appservicePostgresAccess './core/security/postgresql-access.bicep' = {
-  name: 'appservice-postgresql-access'
+// Give the App Service access to SQL Server
+module appserviceSqlAccess './core/security/sqlserver-access.bicep' = {
+  name: 'appservice-sql-access'
   scope: resourceGroup
   params: {
-    postgresServerName: postgresDatabase.outputs.name
+    sqlServerName: sqlDatabase.outputs.name
     principalId: frontEnd.outputs.identityPrincipalId
   }
   dependsOn: [
-    postgresDatabase
+    sqlDatabase
   ]
 }
 
@@ -1499,20 +1493,17 @@ output AZURE_VNET_NAME string = azureVnetName
 
 output AZURE_SEARCH_USE_MIS bool = azureSearchUseMIS
 
-// PostgreSQL operational outputs
-output AZURE_POSTGRES_SERVER_NAME string = postgresDatabase.outputs.name
-output AZURE_POSTGRES_SERVER_FQDN string = postgresDatabase.outputs.serverFullyQualifiedDomainName
-output AZURE_POSTGRES_DATABASE_NAME string = postgresDatabase.outputs.databaseName
+// SQL Server operational outputs
+output AZURE_SQL_SERVER_NAME string = sqlDatabase.outputs.name
+output AZURE_SQL_SERVER_FQDN string = sqlDatabase.outputs.serverFullyQualifiedDomainName
+output AZURE_SQL_DATABASE_NAME string = sqlDatabase.outputs.databaseName
 
-// Set input params as outputs to persist the selection
-output AZURE_POSTGRES_SERVER_NAME_PARAM string = azurePostgresServerName
-output AZURE_POSTGRES_DATABASE_NAME_PARAM string = azurePostgresDatabaseName
+// Set input params as outputs
+output AZURE_SQL_SERVER_NAME_PARAM string = azureSqlServerName
+output AZURE_SQL_DATABASE_NAME_PARAM string = azureSqlDatabaseName
 
 // Connection string related outputs
-output AZURE_POSTGRES_CONNECTION_STRING_SECRET_NAME string = 'postgresDBPassword'
-output AZURE_POSTGRES_ADMIN_USER string = administratorLogin
-output AZURE_POSTGRES_HOST string = postgresDatabase.outputs.serverFullyQualifiedDomainName
-output AZURE_POSTGRES_PORT string = '5432'
-
-// Network related outputs
-output AZURE_POSTGRES_PRIVATE_ENDPOINT_NAME string = networkIsolation ? 'psqlpe0${resourceToken}' : ''
+output AZURE_SQL_CONNECTION_STRING_SECRET_NAME string = 'sqlDBPassword'
+output AZURE_SQL_ADMIN_USER string = administratorLogin
+output AZURE_SQL_HOST string = sqlDatabase.outputs.serverFullyQualifiedDomainName
+output AZURE_SQL_PORT string = '1433'
