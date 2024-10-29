@@ -90,22 +90,18 @@
       "value": "${AZURE_VNET_NAME}"
     },
 
-    "azurePostgresServerName": {
-      "value": "${AZURE_POSTGRES_SERVER_NAME=}"
+    "azureSqlServerName": {
+      "value": "${AZURE_SQL_SERVER_NAME}"
     },
-
-    "azurePostgresDatabaseName": {
-      "value": "${AZURE_POSTGRES_DATABASE_NAME=}"
+    "azureSqlDatabaseName": {
+      "value": "${AZURE_SQL_DATABASE_NAME}"
     },
-
     "administratorLogin": {
-      "value": "${AZURE_POSTGRES_ADMIN_USER=postgresadmin}"
+      "value": "${AZURE_SQL_ADMIN_USER}"
     },
-
     "administratorLoginPassword": {
-      "value": "${AZURE_POSTGRES_ADMIN_PASSWORD=}"
+      "value": "${AZURE_SQL_ADMIN_PASSWORD}"
     },
-
     "deploymentTags": {
       "value": {}
     }

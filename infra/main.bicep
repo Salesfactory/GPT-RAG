@@ -1507,3 +1507,4 @@ output AZURE_SQL_CONNECTION_STRING_SECRET_NAME string = 'sqlDBPassword'
 output AZURE_SQL_ADMIN_USER string = administratorLogin
 output AZURE_SQL_HOST string = sqlDatabase.outputs.serverFullyQualifiedDomainName
 output AZURE_SQL_PORT string = '1433'
+output SQLALCHEMY_DATABASE_URI string = 'mssql+pyodbc://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/sqlDBPassword)@${sqlDatabase.outputs.serverFullyQualifiedDomainName}:1433/${sqlDatabase.outputs.databaseName}?driver=ODBC+Driver+17+for+SQL+Server'
