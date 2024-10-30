@@ -489,27 +489,18 @@ var mySqlServerName = !empty(azureMySqlServerName) ? azureMySqlServerName : 'mys
 param azureMySqlDatabaseName string = ''
 var mySqlDatabaseName = !empty(azureMySqlDatabaseName) ? azureMySqlDatabaseName : 'db0-${resourceToken}'
 
-// Basic tier MySQL specific parameters
-@description('Azure database for MySQL sku name')
-param skuName string = 'B_Gen5_1' // Changed to Basic tier B1ms
+// B2C parameters
+@description('B2C Tenant Name')
+param b2cTenantName string = ''
+var b2cName = !empty(b2cTenantName) ? b2cTenantName : 'b2c0-${resourceToken}'
 
-@description('Azure database for MySQL pricing tier')
-@allowed([
-  'Basic'
-  'GeneralPurpose'
-  'MemoryOptimized'
-])
-param skuTier string = 'Basic' // Changed to Basic tier
+// Add these parameters at the top of your main.bicep
+@description('B2C Storage Account Name. Use your own name convention or leave as it is to generate a random name.')
+param azureB2cStorageAccountName string = ''
+var b2cStorageAccountName = !empty(azureB2cStorageAccountName) ? azureB2cStorageAccountName : 'adb2auth${resourceToken}'
 
-@description('Azure database for MySQL compute capacity in vCores')
-param skuCapacity int = 1 // B1ms has 1 vCore
-
-@description('Azure database for MySQL Sku Size in MB')
-param skuSizeMB int = 5120 // Reduced size for Basic tier
-
-@description('Azure database for MySQL sku family')
-param skuFamily string = 'Gen5'
-// main
+@description('B2C Storage Container Name. Use your own name convention or leave as it is to use default.')
+param azureB2cContainerName string = ''
 
 // resource group
 var azureResourceGroupName = !empty(resourceGroupName) ? resourceGroupName : 'rg-${environmentName}'
@@ -609,7 +600,7 @@ module mysqlDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolat
   name: 'mysql-dnzones'
   scope: resourceGroup
   params: {
-    dnsZoneName: 'privatelink${environment().suffixes.sqlServerHostname}' // This is the correct way
+    dnsZoneName: 'privatelink.mysql.database.azure.com' // This is correct for Flexible Server
     tags: tags
     virtualNetworkName: vnet.outputs.name
   }
@@ -707,7 +698,8 @@ module cosmospe './core/network/private-endpoint.bicep' = if (networkIsolation) 
 
 // SQL Server module
 
-// Replace the SQL Server module with MySQL Server module
+//MySQL Server module
+// MySQL Server module
 module mySqlDatabase './core/db/mysql.bicep' = {
   name: 'mysqlserver'
   scope: resourceGroup
@@ -720,13 +712,6 @@ module mySqlDatabase './core/db/mysql.bicep' = {
     databaseName: mySqlDatabaseName
     keyVaultName: keyVault.outputs.name
     secretName: 'mySqlDBPassword'
-    sku: {
-      name: skuName
-      tier: skuTier
-      capacity: skuCapacity
-      size: skuSizeMB
-      family: skuFamily
-    }
   }
 }
 
@@ -740,7 +725,7 @@ module mysqlpe './core/network/private-endpoint.bicep' = if (networkIsolation) {
     tags: tags
     subnetId: vnet.outputs.aiSubId
     serviceId: mySqlDatabase.outputs.id
-    groupIds: ['mysqlServer']
+    groupIds: ['flexibleServers'] // Changed from 'mysqlServer' to 'flexibleServers'
     dnsZoneId: networkIsolation ? mysqlDnsZone.outputs.id : ''
   }
 }
@@ -982,6 +967,36 @@ module orchestratorPe './core/network/private-endpoint.bicep' = if (networkIsola
     groupIds: ['sites']
     dnsZoneId: networkIsolation ? websitesDnsZone.outputs.id : ''
   }
+}
+
+// B2C Tenant
+module b2cTenant './core/identity/b2c.bicep' = {
+  name: 'b2ctenant'
+  scope: resourceGroup
+  params: {
+    name: b2cName
+    location: location
+    tags: tags
+    displayName: 'Sales Factory AI B2C'
+  }
+}
+
+// B2C Policies
+module b2cPolicies './core/identity/b2c-policies.bicep' = {
+  name: 'b2cpolicies'
+  scope: resourceGroup
+  params: {
+    name: b2cName
+    location: location
+    tags: tags
+    tenantId: b2cTenant.outputs.tenantId
+    keyVaultName: keyVault.outputs.name
+    azureB2cStorageAccountName: azureB2cStorageAccountName
+    azureB2cContainerName: azureB2cContainerName
+  }
+  dependsOn: [
+    b2cTenant
+  ]
 }
 
 // Give the orchestrator access to KeyVault
