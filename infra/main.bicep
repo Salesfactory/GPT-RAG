@@ -473,20 +473,42 @@ var vnetName = !empty(azureVnetName) ? azureVnetName : 'aivnet0-${resourceToken}
 var orchestratorEndpoint = 'https://${orchestratorFunctionAppName}.azurewebsites.net/api/orc'
 var orchestratorUri = 'https://${orchestratorFunctionAppName}.azurewebsites.net'
 
-//SQL Server parameters
-@description('SQL Server Name')
-param azureSqlServerName string = ''
-var sqlServerName = !empty(azureSqlServerName) ? azureSqlServerName : 'sql0-${resourceToken}'
+// MySQL parameters
+@description('MySQL Server administrator login')
+param administratorLogin string = 'mysqladmin'
 
-@description('SQL Database Name')
-param azureSqlDatabaseName string = ''
-var sqlDatabaseName = !empty(azureSqlDatabaseName) ? azureSqlDatabaseName : 'db0-${resourceToken}'
-
-@description('SQL Server administrator login')
-param administratorLogin string = 'sqladmin'
+@description('MySQL Server administrator password')
 @secure()
 param administratorLoginPassword string
 
+@description('MySQL Server Name')
+param azureMySqlServerName string = ''
+var mySqlServerName = !empty(azureMySqlServerName) ? azureMySqlServerName : 'mysql0-${resourceToken}'
+
+@description('MySQL Database Name')
+param azureMySqlDatabaseName string = ''
+var mySqlDatabaseName = !empty(azureMySqlDatabaseName) ? azureMySqlDatabaseName : 'db0-${resourceToken}'
+
+// Basic tier MySQL specific parameters
+@description('Azure database for MySQL sku name')
+param skuName string = 'B_Gen5_1' // Changed to Basic tier B1ms
+
+@description('Azure database for MySQL pricing tier')
+@allowed([
+  'Basic'
+  'GeneralPurpose'
+  'MemoryOptimized'
+])
+param skuTier string = 'Basic' // Changed to Basic tier
+
+@description('Azure database for MySQL compute capacity in vCores')
+param skuCapacity int = 1 // B1ms has 1 vCore
+
+@description('Azure database for MySQL Sku Size in MB')
+param skuSizeMB int = 5120 // Reduced size for Basic tier
+
+@description('Azure database for MySQL sku family')
+param skuFamily string = 'Gen5'
 // main
 
 // resource group
@@ -583,8 +605,8 @@ module searchDnsZone './core/network/private-dns-zones.bicep' = if (networkIsola
   }
 }
 
-module sqlDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolation) {
-  name: 'sql-dnzones'
+module mysqlDnsZone './core/network/private-dns-zones.bicep' = if (networkIsolation) {
+  name: 'mysql-dnzones'
   scope: resourceGroup
   params: {
     dnsZoneName: 'privatelink${environment().suffixes.sqlServerHostname}' // This is the correct way
@@ -685,33 +707,41 @@ module cosmospe './core/network/private-endpoint.bicep' = if (networkIsolation) 
 
 // SQL Server module
 
-module sqlDatabase './core/db/sqlserver.bicep' = {
-  name: 'sqldatabase'
+// Replace the SQL Server module with MySQL Server module
+module mySqlDatabase './core/db/mysql.bicep' = {
+  name: 'mysqlserver'
   scope: resourceGroup
   params: {
-    name: sqlServerName
+    name: mySqlServerName
     location: location
     tags: tags
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    databaseName: sqlDatabaseName
-    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
-    secretName: 'sqlDBPassword'
+    databaseName: mySqlDatabaseName
     keyVaultName: keyVault.outputs.name
+    secretName: 'mySqlDBPassword'
+    sku: {
+      name: skuName
+      tier: skuTier
+      capacity: skuCapacity
+      size: skuSizeMB
+      family: skuFamily
+    }
   }
 }
 
-module sqlpe './core/network/private-endpoint.bicep' = if (networkIsolation) {
-  name: 'sqlpe'
+//MySQL private endpoint
+module mysqlpe './core/network/private-endpoint.bicep' = if (networkIsolation) {
+  name: 'mysqlpe'
   scope: resourceGroup
   params: {
     location: location
-    name: 'sqlpe0${resourceToken}'
+    name: 'mysqlpe0${resourceToken}'
     tags: tags
     subnetId: vnet.outputs.aiSubId
-    serviceId: sqlDatabase.outputs.id
-    groupIds: ['sqlServer']
-    dnsZoneId: networkIsolation ? sqlDnsZone.outputs.id : ''
+    serviceId: mySqlDatabase.outputs.id
+    groupIds: ['mysqlServer']
+    dnsZoneId: networkIsolation ? mysqlDnsZone.outputs.id : ''
   }
 }
 
@@ -1070,37 +1100,33 @@ module frontEnd 'core/host/appservice.bicep' = {
         value: storageAccountName
       }
       {
-        name: 'DB_HOST'
-        value: sqlDatabase.outputs.serverFullyQualifiedDomainName
+        name: 'AZURE_MYSQL_HOST'
+        value: mySqlDatabase.outputs.serverFullyQualifiedDomainName
       }
       {
-        name: 'DB_NAME'
-        value: sqlDatabase.outputs.databaseName
+        name: 'AZURE_MYSQL_DATABASE'
+        value: mySqlDatabase.outputs.databaseName
       }
       {
-        name: 'DB_USER'
+        name: 'AZURE_MYSQL_USER'
         value: administratorLogin
       }
       {
-        name: 'DB_PASSWORD'
-        value: '@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/sqlDBPassword)'
+        name: 'AZURE_MYSQL_PASSWORD'
+        value: '@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/mySqlDBPassword)'
       }
       {
-        name: 'DB_PORT'
-        value: '1433' // SQL Server port
+        name: 'AZURE_MYSQL_PORT'
+        value: '3306' // MySQL port
       }
       {
         name: 'SQLALCHEMY_DATABASE_URI'
-        value: 'mssql+pyodbc://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/sqlDBPassword)@${sqlDatabase.outputs.serverFullyQualifiedDomainName}:1433/${sqlDatabase.outputs.databaseName}?driver=ODBC+Driver+17+for+SQL+Server'
-      }
-      {
-        name: 'LOGLEVEL'
-        value: 'INFO'
+        value: 'mysql+pymysql://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/mySqlDBPassword)@${mySqlDatabase.outputs.serverFullyQualifiedDomainName}:3306/${mySqlDatabase.outputs.databaseName}'
       }
     ]
   }
   dependsOn: [
-    sqlDatabase
+    mySqlDatabase
   ]
 }
 
@@ -1137,16 +1163,16 @@ module appserviceStorageAccountAccess './core/security/blobstorage-access.bicep'
     principalId: frontEnd.outputs.identityPrincipalId
   }
 }
-// Give the App Service access to SQL Server
-module appserviceSqlAccess './core/security/sqlserver-access.bicep' = {
-  name: 'appservice-sql-access'
+// Update the role assignment for App Service to MySQL
+module appserviceMySqlAccess './core/security/mysql-access.bicep' = {
+  name: 'appservice-mysql-access'
   scope: resourceGroup
   params: {
-    sqlServerName: sqlDatabase.outputs.name
+    mysqlServerName: mySqlDatabase.outputs.name
     principalId: frontEnd.outputs.identityPrincipalId
   }
   dependsOn: [
-    sqlDatabase
+    mySqlDatabase
   ]
 }
 
@@ -1493,18 +1519,18 @@ output AZURE_VNET_NAME string = azureVnetName
 
 output AZURE_SEARCH_USE_MIS bool = azureSearchUseMIS
 
-// SQL Server operational outputs
-output AZURE_SQL_SERVER_NAME string = sqlDatabase.outputs.name
-output AZURE_SQL_SERVER_FQDN string = sqlDatabase.outputs.serverFullyQualifiedDomainName
-output AZURE_SQL_DATABASE_NAME string = sqlDatabase.outputs.databaseName
+// Update outputs for MySQL
+output AZURE_MYSQL_SERVER_NAME string = mySqlDatabase.outputs.name
+output AZURE_MYSQL_SERVER_FQDN string = mySqlDatabase.outputs.serverFullyQualifiedDomainName
+output AZURE_MYSQL_DATABASE_NAME string = mySqlDatabase.outputs.databaseName
 
 // Set input params as outputs
-output AZURE_SQL_SERVER_NAME_PARAM string = azureSqlServerName
-output AZURE_SQL_DATABASE_NAME_PARAM string = azureSqlDatabaseName
+output AZURE_MYSQL_SERVER_NAME_PARAM string = azureMySqlServerName
+output AZURE_MYSQL_DATABASE_NAME_PARAM string = azureMySqlDatabaseName
 
 // Connection string related outputs
-output AZURE_SQL_CONNECTION_STRING_SECRET_NAME string = 'sqlDBPassword'
-output AZURE_SQL_ADMIN_USER string = administratorLogin
-output AZURE_SQL_HOST string = sqlDatabase.outputs.serverFullyQualifiedDomainName
-output AZURE_SQL_PORT string = '1433'
-output SQLALCHEMY_DATABASE_URI string = 'mssql+pyodbc://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/sqlDBPassword)@${sqlDatabase.outputs.serverFullyQualifiedDomainName}:1433/${sqlDatabase.outputs.databaseName}?driver=ODBC+Driver+17+for+SQL+Server'
+output AZURE_MYSQL_CONNECTION_STRING_SECRET_NAME string = 'mySqlDBPassword'
+output AZURE_MYSQL_ADMIN_USER string = administratorLogin
+output AZURE_MYSQL_HOST string = mySqlDatabase.outputs.serverFullyQualifiedDomainName
+output AZURE_MYSQL_PORT string = '3306'
+output SQLALCHEMY_DATABASE_URI string = 'mysql+pymysql://${administratorLogin}:@Microsoft.KeyVault(SecretUri=${keyVault.outputs.endpoint}secrets/mySqlDBPassword)@${mySqlDatabase.outputs.serverFullyQualifiedDomainName}:3306/${mySqlDatabase.outputs.databaseName}'
