@@ -439,6 +439,49 @@ var stripeApiKey = !empty(webAppStripeApiKey) ? webAppStripeApiKey : ''
 param webAppStripeSigningSecret string = ''
 var stripeSigningSecret = !empty(webAppStripeSigningSecret) ? webAppStripeSigningSecret : ''
 
+@description('Stripe product ID')
+param webAppStripeProductId string = ''
+var stripeProductId = !empty(webAppStripeProductId) ? webAppStripeProductId : ''
+
+@description('Stripe FA price ID')
+param webAppStripeFAPriceID string = ''
+var stripeFAPriceId = !empty(webAppStripeFAPriceID) ? webAppStripeFAPriceID : ''
+
+@description('Azure Active Directory tenant name')
+param webAppAADTenantName string = ''
+var aadTenantName = !empty(webAppAADTenantName) ? webAppAADTenantName : ''
+
+@description('Azure Active Directory Client ID')
+param webAppAADClientId string = ''
+var aadClientId = !empty(webAppAADClientId) ? webAppAADClientId : ''
+
+@description('Azure Active Directory policy name')
+param webAppAADPolicyName string = ''
+var aadPolicyName = !empty(webAppAADPolicyName) ? webAppAADPolicyName : ''
+
+@description('Azure Active Directory redirect uri')
+param webAppAADRedirectUri string = ''
+var aadRedirectUri = !empty(webAppAADRedirectUri) ? webAppAADRedirectUri : ''
+
+@description('Azure Active Directory client secret')
+@secure()
+param webAppAADClientSecret string = ''
+var aadClientSecret = !empty(webAppAADClientSecret) ? webAppAADClientSecret : ''
+
+@description('Azure Active Directory authority')
+param webAppAADAuthority string = ''
+var aadAuthority = !empty(webAppAADAuthority) ? webAppAADAuthority : ''
+
+@description('Azure Active Directory edit profile')
+param webAppAADEditProfile string = ''
+var aadEditProfile = !empty(webAppAADEditProfile) ? webAppAADEditProfile : ''
+
+@description('Azure Active Directory reset password')
+@secure()
+param webAppAADResetPassword string = ''
+var aadResetPassword = !empty(webAppAADResetPassword) ? webAppAADResetPassword : ''
+
+
 @description('Csv storage container')
 param azureCsvStorageContainer string = ''
 var csvStorageContainer = !empty(azureCsvStorageContainer) ? azureCsvStorageContainer : ''
@@ -1053,6 +1096,46 @@ module frontEnd 'core/host/appservice.bicep' = {
       {
         name: 'STRIPE_SIGNING_SECRET'
         value: stripeSigningSecret
+      }
+      {
+        name: 'STRIPE_PRODUCT_ID'
+        value: stripeProductId
+      }
+      {
+        name: 'STRIPE_FA_PPRICE_ID'
+        value: stripeFAPriceId
+      }
+      {
+        name: 'AAD_TENANT_NAME'
+        value: aadTenantName
+      }
+      {
+        name: 'AAD_CLIENT_ID'
+        value: aadClientId
+      }
+      {
+        name: 'AAD_POLICY_NAME'
+        value: aadPolicyName
+      }
+      {
+        name: 'AAD_REDIRECT_URI'
+        value: aadRedirectUri
+      }
+      {
+        name: 'AAD_CLIENT_SECRET'
+        value: aadClientSecret
+      }
+      {
+        name: 'AUTHORITY'
+        value: aadAuthority
+      }
+      {
+        name: 'EDITPROFILE_USER_FLOW'
+        value: aadEditProfile
+      }
+      {
+        name: 'RESETPASSSWORD_USER_FLOW'
+        vale: aadResetPassword
       }
       {
         name: 'AZURE_CSV_STORAGE_CONTAINER'
