@@ -3243,6 +3243,50 @@ resource databaseAccounts_dbgpt0_vm2b2htvuuclm_name_db0_vm2b2htvuuclm_userTokens
   ]
 }
 
+resource databaseAccounts_dbgpt0_vm2b2htvuuclm_name_db0_vm2b2htvuuclm_schedulestemplates 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-05-15' = {
+  parent: databaseAccounts_dbgpt0_vm2b2htvuuclm_name_db0_vm2b2htvuuclm
+  name: 'schedules'
+  properties: {
+    resource: {
+      analyticalStorageTtl: -1
+      computedProperties: []
+      conflictResolutionPolicy: {
+        conflictResolutionPath: '/_ts'
+        mode: 'LastWriterWins'
+      }
+      id: 'schedules'
+      indexingPolicy: {
+        automatic: true
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
+          }
+        ]
+        includedPaths: [
+          {
+            path: '/*'
+          }
+        ]
+        indexingMode: 'consistent'
+      }
+      partitionKey: {
+        kind: 'Hash'
+        version: 2
+        paths: [
+          '/companyId'
+          '/reportType'
+        ]
+      }
+      uniqueKeyPolicy: {
+        uniqueKeys: []
+      }
+    }
+  }
+  dependsOn: [
+    databaseAccounts_dbgpt0_vm2b2htvuuclm_name_resource
+  ]
+}
+
 resource databaseAccounts_dbgpt0_vm2b2htvuuclm_name_11e31339_a6c7_404e_84d1_a8bf7308319b 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
   parent: databaseAccounts_dbgpt0_vm2b2htvuuclm_name_resource
   name: '11e31339-a6c7-404e-84d1-a8bf7308319b'
