@@ -22,8 +22,14 @@ jobs:
           curl -fsSL https://aka.ms/install-azd.sh | bash
           echo "Azure Developer CLI installed."
 
+      - name: Refresh Enviroment
+        run: azd env refresh --no-prompt
+        env:
+          AZURE_ENV_NAME: "develop-clew"
+          AZURE_LOCATION: "eastus2"
+
       - name: Provision Azure Resources
-        run: azd provision
+        run: azd provision  --no-prompt
         env:
           AZURE_ENV_NAME: "develop-clew"
           AZURE_LOCATION: "eastus2"
