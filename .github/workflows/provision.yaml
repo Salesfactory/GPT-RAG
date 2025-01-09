@@ -1,0 +1,44 @@
+name: AZD Provision on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install azd
+        uses: Azure/setup-azd@v1.0.0
+
+      - name: Log in with Azure (Client Credentials)
+        if: ${{ env.AZURE_CREDENTIALS != '' }}
+        run: |
+          $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
+          Write-Host "::add-mask::$($info.clientSecret)"
+
+          azd auth login `
+            --client-id "$($info.clientId)" `
+            --client-secret "$($info.clientSecret)" `
+            --tenant-id "$($info.tenantId)"
+        shell: pwsh
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Refresh Enviroment
+        run: azd env refresh --no-prompt
+        env:
+          AZURE_ENV_NAME: "develop-clew"
+          AZURE_LOCATION: "eastus2"
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Provision Azure Resources
+        run: azd provision  --no-prompt
+        env:
+          AZURE_ENV_NAME: "develop-clew"
+          AZURE_LOCATION: "eastus2"
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
