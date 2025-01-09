@@ -139,4 +139,4 @@ output id string = storage.id
 output primaryEndpoints object = storage.properties.primaryEndpoints
 
 
-// to run this module: az deployment group what-if --resource-group rg-develop-clew --template-file infra/core/storage/storage-account.bicep --parameters name=strag0vm2b2htvuuclm keyVaultName=kv0-vm2b2htvuuclm
+// to run this module: az deployment group what-if --resource-group < rg-name> --template-file infra/core/storage/storage-account.bicep --parameters name=<storage-name> keyVaultName=<key-vault-name>
