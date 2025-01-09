@@ -7,6 +7,7 @@ on:
 
 jobs:
   provision:
+    environment: develop
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -35,7 +36,10 @@ jobs:
           AZURE_ENV_NAME: "develop-clew"
           AZURE_LOCATION: "eastus2"
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
+          vmUserInitialPassword: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
+          webAppStripeSigningSecret: ${{ secrets.AZURE_WEBAPP_STRIPE_SIGNING_SECRET }}
+          webAppAADClientSecret: ${{ secrets.AZURE_WEBAPP_AAD_CLIENT_SECRET }}
+          webAppAADResetPassword: ${{ secrets.AZURE_WEBAPP_AAD_RESET_PASSWORD }}
           webAppEmailPass: ${{ secrets.AZURE_WEBAPP_EMAIL_PASSWORD }}
 
       - name: Provision Azure Resources
