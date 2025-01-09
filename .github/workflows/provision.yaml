@@ -35,6 +35,7 @@ jobs:
         env:
           AZURE_ENV_NAME: "develop-clew"
           AZURE_LOCATION: "eastus2"
+          AZURE_KEY_VAULT_NAME: "kv0-vm2b2htvuuclm" # Add this
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           vmUserInitialPassword: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
           webAppStripeSigningSecret: ${{ secrets.AZURE_WEBAPP_STRIPE_SIGNING_SECRET }}

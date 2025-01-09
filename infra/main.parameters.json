@@ -91,16 +91,16 @@
       "value": "${AZURE_VNET_NAME}"
     },
     "webAppStripeSigningSecret": {
-      "value": "${AZURE_WEBAPP_STRIPE_SIGNING_SECRET}"
+      "value": "$(secretOrRandomPassword ${AZURE_KEY_VAULT_NAME} webAppStripeSigningSecret)"
     },
     "webAppAADClientSecret": {
-      "value": "${AZURE_WEBAPP_AAD_CLIENT_SECRET}"
+      "value": "$(secretOrRandomPassword ${AZURE_KEY_VAULT_NAME} webAppAADClientSecret)"
     },
     "webAppAADResetPassword": {
-      "value": "${AZURE_WEBAPP_AAD_RESET_PASSWORD}"
+      "value": "$(secretOrRandomPassword ${AZURE_KEY_VAULT_NAME} webAppAADResetPassword)"
     },
     "webAppEmailPass": {
-      "value": "${AZURE_WEBAPP_EMAIL_PASSWORD}"
+      "value": "$(secretOrRandomPassword ${AZURE_KEY_VAULT_NAME} webAppEmailPass)"
     },
 
     "deploymentTags": {
