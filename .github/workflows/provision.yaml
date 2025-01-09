@@ -30,7 +30,7 @@ jobs:
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Refresh Enviroment
+      - name: Refresh Environment
         run: azd env refresh --no-prompt
         env:
           AZURE_ENV_NAME: "develop-clew"
@@ -42,9 +42,14 @@ jobs:
           webAppAADResetPassword: ${{ secrets.AZURE_WEBAPP_AAD_RESET_PASSWORD }}
           webAppEmailPass: ${{ secrets.AZURE_WEBAPP_EMAIL_PASSWORD }}
 
-      - name: Provision Azure Resources
-        run: azd provision  --no-prompt
-        env:
-          AZURE_ENV_NAME: "develop-clew"
-          AZURE_LOCATION: "eastus2"
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # - name: Provision Azure Resources
+      #   run: azd provision --no-prompt
+      #   env:
+      #     AZURE_ENV_NAME: "develop-clew"
+      #     AZURE_LOCATION: "eastus2"
+      #     AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      #     vmUserInitialPassword: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
+      #     webAppStripeSigningSecret: ${{ secrets.AZURE_WEBAPP_STRIPE_SIGNING_SECRET }}
+      #     webAppAADClientSecret: ${{ secrets.AZURE_WEBAPP_AAD_CLIENT_SECRET }}
+      #     webAppAADResetPassword: ${{ secrets.AZURE_WEBAPP_AAD_RESET_PASSWORD }}
+      #     webAppEmailPass: ${{ secrets.AZURE_WEBAPP_EMAIL_PASSWORD }}

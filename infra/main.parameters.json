@@ -20,6 +20,7 @@
     "vmUserInitialPassword": {
       "value": "$(secretOrRandomPassword ${AZURE_VM_KV_NAME} vmUserInitialPassword)"
     },
+
     "vmUserName": {
       "value": "gptrag"
     },
@@ -88,6 +89,18 @@
     },
     "azureVnetName": {
       "value": "${AZURE_VNET_NAME}"
+    },
+    "webAppStripeSigningSecret": {
+      "value": "${AZURE_WEBAPP_STRIPE_SIGNING_SECRET}"
+    },
+    "webAppAADClientSecret": {
+      "value": "${AZURE_WEBAPP_AAD_CLIENT_SECRET}"
+    },
+    "webAppAADResetPassword": {
+      "value": "${AZURE_WEBAPP_AAD_RESET_PASSWORD}"
+    },
+    "webAppEmailPass": {
+      "value": "${AZURE_WEBAPP_EMAIL_PASSWORD}"
     },
 
     "deploymentTags": {
