@@ -36,6 +36,8 @@ jobs:
           AZURE_LOCATION: "eastus2"
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+          webAppEmailPass: ${{ secrets.AZURE_WEBAPP_EMAIL_PASSWORD }}
+
       - name: Provision Azure Resources
         run: azd provision  --no-prompt
         env:
