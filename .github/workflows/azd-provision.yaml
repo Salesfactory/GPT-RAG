@@ -1,0 +1,29 @@
+name: AZD Provision on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Azure Developer CLI
+        run: |
+          curl -fsSL https://aka.ms/install-azd.sh | bash
+          echo "Azure Developer CLI installed."
+
+      - name: Provision Azure Resources
+        run: azd provision
+        env:
+          AZURE_ENV_NAME: "develop-clew"
+          AZURE_LOCATION: "eastus2"
