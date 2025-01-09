@@ -34,9 +34,11 @@ jobs:
         env:
           AZURE_ENV_NAME: "develop-clew"
           AZURE_LOCATION: "eastus2"
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Provision Azure Resources
         run: azd provision  --no-prompt
         env:
           AZURE_ENV_NAME: "develop-clew"
           AZURE_LOCATION: "eastus2"
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
