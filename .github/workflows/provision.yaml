@@ -39,38 +39,38 @@ jobs:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
           # Required Password Parameters
-          vmUserInitialPassword: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
-          webAppAADClientSecret: ${{ secrets.AAD_CLIENT_SECRET }}
-          webAppAADResetPassword: ${{ secrets.AAD_RESET_PASSWORD }}
-          webAppEmailPass: ${{ secrets.EMAIL_PASSWORD }}
+          AZURE_VM_USER_INITIAL_PASSWORD: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
+          AZURE_WEBAPP_AAD_CLIENT_SECRET: ${{ secrets.AAD_CLIENT_SECRET }}
+          AZURE_WEBAPP_AAD_RESET_PASSWORD: ${{ secrets.AAD_RESET_PASSWORD }}
+          AZURE_WEBAPP_EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
           # Stripe Integration
-          stripeApiKey: ${{ secrets.STRIPE_API_KEY }}
-          stripeSigningSecret: ${{ secrets.STRIPE_SIGNING_SECRET }}
-          webAppStripeProductId: ${{ secrets.STRIPE_PRODUCT_ID }}
-          webAppStripeFAPriceID: ${{ secrets.STRIPE_FA_PRICE_ID }}
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+          STRIPE_SIGNING_SECRET: ${{ secrets.STRIPE_SIGNING_SECRET }}
+          STRIPE_PRODUCT_ID: ${{ secrets.STRIPE_PRODUCT_ID }}
+          STRIPE_FA_PRICE_ID: ${{ secrets.STRIPE_FA_PRICE_ID }}
 
           # Azure AD B2C Configuration
-          webAppAADTenantName: ${{ secrets.AAD_TENANT_NAME }}
-          webAppAADClientId: ${{ secrets.AAD_CLIENT_ID }}
-          webAppAADPolicyName: ${{ secrets.AAD_POLICY_NAME }}
-          webAppAADRedirectUri: ${{ secrets.AAD_REDIRECT_URI }}
-          webAppAADAuthority: ${{ secrets.AAD_AUTHORITY }}
-          webAppAADEditProfile: ${{ secrets.AAD_EDIT_PROFILE }}
+          AZURE_WEBAPP_AAD_TENANT_NAME: ${{ secrets.AAD_TENANT_NAME }}
+          AZURE_WEBAPP_AAD_CLIENT_ID: ${{ secrets.AAD_CLIENT_ID }}
+          AZURE_WEBAPP_AAD_POLICY_NAME: ${{ secrets.AAD_POLICY_NAME }}
+          AZURE_WEBAPP_AAD_REDIRECT_URI: ${{ secrets.AAD_REDIRECT_URI }}
+          AZURE_WEBAPP_AAD_AUTHORITY: ${{ secrets.AAD_AUTHORITY }}
+          AZURE_WEBAPP_AAD_EDIT_PROFILE: ${{ secrets.AAD_EDIT_PROFILE }}
 
           # Email Configuration
-          webAppEmailHost: ${{ secrets.EMAIL_HOST }}
-          webAppEmailUser: ${{ secrets.EMAIL_USER }}
-          webAppInvitationLink: ${{ secrets.INVITATION_LINK }}
+          AZURE_WEBAPP_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          AZURE_WEBAPP_EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          AZURE_WEBAPP_INVITATION_LINK: ${{ secrets.INVITATION_LINK }}
 
           # Azure Service Keys
-          azureAiSearchApiKey: ${{ secrets.AI_SEARCH_API_KEY }}
-          azureOpenAiApiKey: ${{ secrets.OPENAI_API_KEY }}
+          AZURE_AI_SEARCH_API_KEY: ${{ secrets.AI_SEARCH_API_KEY }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
           # Orchestrator Settings
-          orchestratorTavilyApiKey: ${{ secrets.TAVILY_API_KEY }}
-          orchestratorFunctionsWorkerRuntime: "python"
-          orchestratorSerperApiKey: ${{ secrets.SERPER_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          AZURE_FUNCTIONS_WORKER_RUNTIME: "python"
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
 
       # - name: Provision Azure Resources
       #   run: azd provision --no-prompt
@@ -81,35 +81,35 @@ jobs:
       #     AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       #     # Required Password Parameters
-      #     vmUserInitialPassword: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
-      #     webAppAADClientSecret: ${{ secrets.AAD_CLIENT_SECRET }}
-      #     webAppAADResetPassword: ${{ secrets.AAD_RESET_PASSWORD }}
-      #     webAppEmailPass: ${{ secrets.EMAIL_PASSWORD }}
+      #     AZURE_VM_USER_INITIAL_PASSWORD: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
+      #     AZURE_WEBAPP_AAD_CLIENT_SECRET: ${{ secrets.AAD_CLIENT_SECRET }}
+      #     AZURE_WEBAPP_AAD_RESET_PASSWORD: ${{ secrets.AAD_RESET_PASSWORD }}
+      #     AZURE_WEBAPP_EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
       #     # Stripe Integration
-      #     stripeApiKey: ${{ secrets.STRIPE_API_KEY }}
-      #     stripeSigningSecret: ${{ secrets.STRIPE_SIGNING_SECRET }}
-      #     webAppStripeProductId: ${{ secrets.STRIPE_PRODUCT_ID }}
-      #     webAppStripeFAPriceID: ${{ secrets.STRIPE_FA_PRICE_ID }}
+      #     STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+      #     STRIPE_SIGNING_SECRET: ${{ secrets.STRIPE_SIGNING_SECRET }}
+      #     STRIPE_PRODUCT_ID: ${{ secrets.STRIPE_PRODUCT_ID }}
+      #     STRIPE_FA_PRICE_ID: ${{ secrets.STRIPE_FA_PRICE_ID }}
 
       #     # Azure AD B2C Configuration
-      #     webAppAADTenantName: ${{ secrets.AAD_TENANT_NAME }}
-      #     webAppAADClientId: ${{ secrets.AAD_CLIENT_ID }}
-      #     webAppAADPolicyName: ${{ secrets.AAD_POLICY_NAME }}
-      #     webAppAADRedirectUri: ${{ secrets.AAD_REDIRECT_URI }}
-      #     webAppAADAuthority: ${{ secrets.AAD_AUTHORITY }}
-      #     webAppAADEditProfile: ${{ secrets.AAD_EDIT_PROFILE }}
+      #     AZURE_WEBAPP_AAD_TENANT_NAME: ${{ secrets.AAD_TENANT_NAME }}
+      #     AZURE_WEBAPP_AAD_CLIENT_ID: ${{ secrets.AAD_CLIENT_ID }}
+      #     AZURE_WEBAPP_AAD_POLICY_NAME: ${{ secrets.AAD_POLICY_NAME }}
+      #     AZURE_WEBAPP_AAD_REDIRECT_URI: ${{ secrets.AAD_REDIRECT_URI }}
+      #     AZURE_WEBAPP_AAD_AUTHORITY: ${{ secrets.AAD_AUTHORITY }}
+      #     AZURE_WEBAPP_AAD_EDIT_PROFILE: ${{ secrets.AAD_EDIT_PROFILE }}
 
       #     # Email Configuration
-      #     webAppEmailHost: ${{ secrets.EMAIL_HOST }}
-      #     webAppEmailUser: ${{ secrets.EMAIL_USER }}
-      #     webAppInvitationLink: ${{ secrets.INVITATION_LINK }}
+      #     AZURE_WEBAPP_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+      #     AZURE_WEBAPP_EMAIL_USER: ${{ secrets.EMAIL_USER }}
+      #     AZURE_WEBAPP_INVITATION_LINK: ${{ secrets.INVITATION_LINK }}
 
       #     # Azure Service Keys
-      #     azureAiSearchApiKey: ${{ secrets.AI_SEARCH_API_KEY }}
-      #     azureOpenAiApiKey: ${{ secrets.OPENAI_API_KEY }}
+      #     AZURE_AI_SEARCH_API_KEY: ${{ secrets.AI_SEARCH_API_KEY }}
+      #     AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       #     # Orchestrator Settings
-      #     orchestratorTavilyApiKey: ${{ secrets.TAVILY_API_KEY }}
-      #     orchestratorFunctionsWorkerRuntime: "python"
-      #     orchestratorSerperApiKey: ${{ secrets.SERPER_API_KEY }}
+      #     TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      #     AZURE_FUNCTIONS_WORKER_RUNTIME: "python"
+      #     SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
