@@ -131,6 +131,9 @@
     "webAppEmailUser": {
       "value": "${AZURE_WEBAPP_EMAIL_USER}"
     },
+    "webAppEmailPass": {
+      "value": "${AZURE_WEBAPP_EMAIL_PASSWORD}"
+    },
     "webAppInvitationLink": {
       "value": "${AZURE_WEBAPP_INVITATION_LINK}"
     },
