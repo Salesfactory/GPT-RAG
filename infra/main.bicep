@@ -542,7 +542,7 @@ var orchestratorUri = 'https://${orchestratorFunctionAppName}.azurewebsites.net'
 // B2C parameters
 @description('B2C Tenant Name')
 param b2cTenantName string = ''
-var b2cName = !empty(b2cTenantName) ? b2cTenantName : 'b2c0-${resourceToken}'
+var b2cName = !empty(b2cTenantName) ? b2cTenantName : 'b2c0${resourceToken}'
 
 // Add these parameters at the top of your main.bicep
 @description('B2C Storage Account Name. Use your own name convention or leave as it is to generate a random name.')
