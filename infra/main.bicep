@@ -1201,6 +1201,7 @@ module frontEnd 'core/host/appservice.bicep' = {
         name: 'TAVILY_API_KEY'
         value: orchestratorTavilyApiKeyVar
       }
+
     ]
   }
 }
