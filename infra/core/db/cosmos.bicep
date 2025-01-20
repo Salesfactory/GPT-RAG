@@ -35,8 +35,8 @@ param systemManagedFailover bool = true
 @description('The name for the database')
 param databaseName string
 
-// @description('The name for the container')
-// param containerName string
+@description('The name for the container')
+param containerName string
 
 @description('Maximum autoscale throughput for the container')
 @minValue(1000)
@@ -143,10 +143,10 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
 
 resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
-  name: 'conversations'
+  name: containerName
   properties: {
     resource: {
-      id: 'conversations'
+      id: containerName
       partitionKey: {
         paths: [
           '/id'
