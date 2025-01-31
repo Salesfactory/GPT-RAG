@@ -532,6 +532,7 @@ var vnetName = !empty(azureVnetName) ? azureVnetName : 'aivnet0-${resourceToken}
 
 var orchestratorEndpoint = 'https://${orchestratorFunctionAppName}.azurewebsites.net/api/orc'
 var orchestratorUri = 'https://${orchestratorFunctionAppName}.azurewebsites.net'
+var webAppUri = 'https://${appServiceName}.azurewebsites.net'
 
 // B2C parameters
 @description('B2C Tenant Name')
@@ -964,6 +965,10 @@ module orchestrator './core/host/functions.bicep' = {
         name: 'LOGLEVEL'
         value: 'INFO'
       }
+      {
+        name: 'WEB_APP_URL'
+        value: webAppUri
+      }
     ]
   }
 }
@@ -1247,6 +1252,16 @@ module appserviceOrchestratorAccess './core/host/functions-access.bicep' = {
   params: {
     functionAppName: orchestrator.outputs.name
     principalId: frontEnd.outputs.identityPrincipalId
+  }
+}
+
+// Give the App Service access to Cosmos
+module appserviceCosmosAccess './core/security/cosmos-access.bicep' = {
+  name: 'appservice-cosmos-access'
+  scope: resourceGroup
+  params: {
+    principalId: frontEnd.outputs.identityPrincipalId
+    accountName: cosmosAccount.outputs.name
   }
 }
 
