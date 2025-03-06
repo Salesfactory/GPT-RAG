@@ -383,7 +383,7 @@ param chunkTokenOverlap string = '200'
 @description('Name of the container where source documents will be stored.')
 param storageContainerName string = 'documents'
 @description('Name of the container where financial agent documents will be stored.')
-param storageFinancialAgentContainerName string = 'FA_Documents'
+param storageFinancialAgentContainerName string = 'fa-documents'
 // Service names
 // The name for each service can be set from environment variables which are mapped in main.parameters.json.
 // Then no maping to specific name is defined, a unique name is generated for each service based on the resourceToken created above.
