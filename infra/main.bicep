@@ -515,6 +515,16 @@ var aiSearchApiKey = !empty(azureAiSearchApiKey) ? azureAiSearchApiKey : ''
 param azureOpenAiApiKey string = ''
 var openAiApiKey = !empty(azureOpenAiApiKey) ? azureOpenAiApiKey : ''
 
+// Ingestion
+
+@description('Azure Computer Vision Endpoint')
+param azureComputerVisionEndpoint string = ''
+var computerVisionEndpoint = !empty(azureComputerVisionEndpoint) ? azureComputerVisionEndpoint : ''
+
+@description('Azure Computer Vision API Key')
+param azureComputerVisionApiKey string = ''
+var computerVisionApiKey = !empty(azureComputerVisionApiKey) ? azureComputerVisionApiKey : ''
+
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
 // ---------------------------------------------------------------------
@@ -1307,6 +1317,14 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name: 'FUNCTION_APP_NAME'
         value: dataIngestionFunctionAppName
+      }
+      {
+        name: 'AZ_COMPUTER_VISION_ENDPOINT'
+        value: computerVisionEndpoint
+      }
+      {
+        name: 'AZ_COMPUTER_VISION_KEY'
+        value: computerVisionApiKey
       }
       {
         name: 'SEARCH_SERVICE'

@@ -5,6 +5,12 @@
     "environmentName": {
       "value": "${AZURE_ENV_NAME}"
     },
+    "computerVisionKey": {
+      "value": "${AZ_COMPUTER_VISION_KEY}"
+    },
+    "computerVisionEndpoint": {
+      "value": "${AZ_COMPUTER_VISION_ENDPOINT}"
+    },
     "location": {
       "value": "${AZURE_LOCATION}"
     },
