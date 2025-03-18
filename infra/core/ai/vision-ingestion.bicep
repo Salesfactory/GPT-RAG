@@ -12,7 +12,7 @@ var projectName = '${name}-project'
 
 resource visionIngestionAIService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   name: aiServiceName
-  location: 'westus'
+  location: location
   sku: {
     name: 'S0'
   }
@@ -29,7 +29,7 @@ resource visionIngestionAIService 'Microsoft.CognitiveServices/accounts@2024-10-
 // Vision Ingestion Hub
 resource visionIngestionHub 'Microsoft.MachineLearningServices/workspaces@2024-10-01' = {
   name: hubName
-  location: 'westus'
+  location: location
   tags: {
     '__SYSTEM__AzureOpenAI_${aiServiceName}_aoai': visionIngestionAIService.id
     '__SYSTEM__AIServices_${aiServiceName}': visionIngestionAIService.id
@@ -63,7 +63,7 @@ resource visionIngestionHub 'Microsoft.MachineLearningServices/workspaces@2024-1
 // Vision Ingestion Project
 resource visionIngestionProject 'Microsoft.MachineLearningServices/workspaces@2024-10-01' = {
   name: projectName
-  location: 'westus'
+  location: location
   tags: {
     labelingEnabled: 'true'
   }
