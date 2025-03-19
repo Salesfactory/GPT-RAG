@@ -171,5 +171,5 @@ output projectWorkspaceId string = visionIngestionProject.id
 output aiServiceId string = visionIngestionAIService.id
 output aiServiceEndpoint string = visionIngestionAIService.properties.endpoint
 // NOT SURE HOW TO RETURN THIS ERROR: Outputs should not contain secrets. Found possible secret: function 'listKeys'
-output aiServiceKey string = listKeys(visionIngestionAIService.id, visionIngestionAIService.apiVersion).key1
+output aiServiceKey string = visionIngestionAIService.listKeys().key1
 

@@ -1234,6 +1234,14 @@ module frontEnd 'core/host/appservice.bicep' = {
         name: 'TAVILY_API_KEY'
         value: orchestratorTavilyApiKeyVar
       }
+      {
+        name: 'O1_ENDPOINT'
+        value: openAi.outputs.o1Endpoint
+      }
+      {
+        name: 'O1_KEY'
+        value: openAi.outputs.o1Key
+      }
     ]
   }
 }

@@ -60,7 +60,30 @@ resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' =  [for s
   }
 }]
 
+param accounts_o1_deployment_name string = 'o1-deployment'
+
+resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
+  name: accounts_o1_deployment_name
+  location: 'eastus2'
+  sku: {
+    name: 'S0'
+  }
+  kind: 'OpenAI'
+  properties: {
+    apiProperties: {}
+    customSubDomainName: accounts_o1_deployment_name
+    networkAcls: {
+      defaultAction: 'Allow'
+      virtualNetworkRules: []
+      ipRules: []
+    }
+    publicNetworkAccess: 'Enabled'
+  }
+}
 
 output endpoint string = account.properties.endpoint
 output id string = account.id
 output name string = account.name
+
+output o1Endpoint string = cognitiveServicesAccount.properties.endpoint
+output o1Key string = cognitiveServicesAccount.listKeys().key1
