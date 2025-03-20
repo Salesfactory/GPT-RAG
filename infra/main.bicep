@@ -1479,6 +1479,16 @@ module cognitiveServices 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
+module deepseekR1Deployment 'core/ai/r1-deployment.bicep' = {
+  name: 'deepseekR1Deployment'
+  scope: resourceGroup
+  params: {
+    name: 'deepseekR1Deployment'
+    keyVaultName: keyVault.outputs.name
+    storageAccountName: storageAccountName
+  }
+}
+
 module cognitiveServicesPe './core/network/private-endpoint.bicep' = if (networkIsolation) {
   name: 'cognitiveServicesPe'
   scope: resourceGroup
