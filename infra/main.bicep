@@ -996,6 +996,14 @@ module orchestrator './core/host/functions.bicep' = {
         name: 'WEB_APP_URL'
         value: webAppUri
       }
+      {
+        name: 'AZURE_INFERENCE_SDK_ENDPOINT'
+        value: deepseekR1Deployment.outputs.r1Endpoint
+      }
+      {
+        name: 'AZURE_INFERENCE_SDK_KEY'
+        value: deepseekR1Deployment.outputs.r1Key
+      }
     ]
   }
 }
