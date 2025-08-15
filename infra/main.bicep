@@ -1210,7 +1210,7 @@ module orchestratorSearchAccess './core/security/search-access.bicep' = {
 }
 
 // Give the orchestrator access to  Service Bus Data Receiver
-module orchestratorSbReceiverAccess './core/security/servicebus-access.bicep' = if (!empty(orchestrator.outputs.identityPrincipalId)) {
+module orchestratorSbReceiverAccess './core/security/servicebus-access.bicep' = {
   name: 'rbac-orchestrator-sb-receiver'
   scope: resourceGroup
   params: {
@@ -1518,7 +1518,7 @@ module appserviceCosmosAccess './core/security/cosmos-access.bicep' = {
 }
 
 // Give the App Service access → Service Bus Data Sender
-module appserviceSeriveBusSenderAccess './core/security/servicebus-access.bicep' = if (!empty(apiApp.identity.principalId)) {
+module appserviceSeriveBusSenderAccess './core/security/servicebus-access.bicep' = {
   name: 'rbac-appservice-sb-sender'
   scope: resourceGroup
   params: {
