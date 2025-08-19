@@ -1920,16 +1920,6 @@ module mcpServer './core/host/functions.bicep' = {
   }
 }
 
-// Setting the Azure AI Project Manager role to the MCP Server
-module mcpServerAaiProjectManagerRole './core/security/mcp-access.bicep' = {
-  name: 'mcpServerAaiProjectManagerRole'
-  scope: resourceGroup
-  params: {
-    functionAppName: mcpServer.name
-    principalId: mcpServer.outputs.identityPrincipalId
-  }
-}
-
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_ZERO_TRUST string = networkIsolation ? 'TRUE' : 'FALSE'
 output AZURE_VM_NAME string = networkIsolation ? ztVmName : ''
