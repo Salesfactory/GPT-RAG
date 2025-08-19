@@ -537,7 +537,6 @@ var mcpCodeInterpreterAgentModelVar = !empty(mcpCodeInterpreterAgentModel) ? mcp
 @description('endpoint service for the agent model')
 var mcpAgentEndpointService = 'r1ai0-${resourceToken}-aiservice'
 
-
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
 // ---------------------------------------------------------------------
@@ -1918,6 +1917,16 @@ module mcpServer './core/host/functions.bicep' = {
         value: 'INFO'
       }
     ]
+  }
+}
+
+// Setting the Azure AI Project Manager role to the MCP Server
+module mcpServerAaiProjectManagerRole './core/security/mcp-access.bicep' = {
+  name: 'mcpServerAaiProjectManagerRole'
+  scope: resourceGroup
+  params: {
+    functionAppName: mcpServer.name
+    principalId: mcpServer.outputs.identityPrincipalId
   }
 }
 
