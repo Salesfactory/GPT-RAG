@@ -181,9 +181,6 @@
     },
     "deploymentTags": {
       "value": {}
-    },
-    "azureServiceBusNamespaceName": {
-      "value": "${AZURE_SERVICEBUS_NAMESPACE_NAME}"
     }
   }
 }
