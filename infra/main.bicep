@@ -534,21 +534,6 @@ var mcpCodeInterpreterAgentModelVar = !empty(mcpCodeInterpreterAgentModel) ? mcp
 @description('endpoint service for the agent model')
 var mcpAgentEndpointService = 'r1ai0-${resourceToken}-aiservice'
 
-@description('File Selection Model used by the MCP server.')
-@secure()
-param fileSelectionModel string = ''
-var fileSelectionModelVar = !empty(fileSelectionModel) ? fileSelectionModel : ''
-
-@description('File Selection Reasoning Effort used by the MCP server.')
-@secure()
-param fileSelectionReasoningEffort string = ''
-var fileSelectionReasoningEffortVar = !empty(fileSelectionReasoningEffort) ? fileSelectionReasoningEffort : ''
-
-@description('Model API Version used by the MCP server.')
-@secure()
-param modelApiVersion string = ''
-var modelApiVersionVar = !empty(modelApiVersion) ? modelApiVersion : ''
-
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
 // ---------------------------------------------------------------------
@@ -580,6 +565,15 @@ var langsmithProjectVar = !empty(langsmithProject) ? langsmithProject : ''
 param langsmithTracingV2 string = ''
 var langsmithTracingV2Var = !empty(langsmithTracingV2) ? langsmithTracingV2 : ''
 
+@description('Capacity for the gpt-4.1 model')
+param gpt41Capacity int
+
+@description('Capacity for the gpt-5-nano model')
+param gpt5nanoCapacity int
+
+@description('Capacity for the o4-mini model')
+param o4miniCapacity int
+
 @description('Serper API Key used by the orchestrator.')
 @secure()
 param orchestratorSerperApiKey string = ''
@@ -592,6 +586,15 @@ var orchestratorUri = 'https://${orchestratorFunctionAppName}.azurewebsites.net'
 var webAppUri = 'https://${appServiceName}.azurewebsites.net'
 
 var pythonEnableInitIndexing = '1'
+
+@description('Model used for brand analysis')
+param brandAnalysisModel string = ''
+var brandAnalysisModelVar = !empty(brandAnalysisModel) ? brandAnalysisModel : ''
+
+@description('Reasoning effort for report')
+param reasoningEffortReport string = ''
+var reasoningEffortReportVar = !empty(reasoningEffortReport) ? reasoningEffortReport : ''
+
 
 // MCP Function app
 @description('MCP Search Index')
@@ -891,6 +894,7 @@ module orchestrator './core/host/functions.bicep' = {
     appInsightsConnectionString: appInsights.outputs.connectionString
     appInsightsInstrumentationKey: appInsights.outputs.instrumentationKey
     tags: union(tags, { 'azd-service-name': 'orchestrator' })
+    runtimeVersion: '3.11'
     alwaysOn: true
     functionAppScaleLimit: 2
     numberOfWorkers: 2
@@ -1092,6 +1096,18 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'MCP_FUNCTION_NAME'
         value: mcpServerFunctionAppName
+      }
+      {
+        name: 'AGENT_ENDPOINT_SERVICE'
+        value: mcpAgentEndpointService
+      }
+      {
+        name: 'BRAND_ANALYSIS_MODEL'
+        value: brandAnalysisModelVar
+      }
+      {
+        name: 'REASONING_EFFORT'
+        value: reasoningEffortReportVar
       }
     ]
   }
@@ -1766,6 +1782,9 @@ module o1Deployment 'core/ai/o1-deployment.bicep' = {
     location: 'eastus2'
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     tags: tags
+    gpt41Capacity: gpt41Capacity
+    gpt5nanoCapacity: gpt5nanoCapacity
+    o4miniCapacity: o4miniCapacity
   }
 }
 
@@ -1878,18 +1897,6 @@ module mcpServer './core/host/functions.bicep' = {
         value: orchestratorTavilyApiKeyVar
       }
       {
-        name: 'FILE_SELECTION_MODEL'
-        value: fileSelectionModelVar
-      }
-      {
-        name: 'FILE_SELECTION_REASONING_EFFORT'
-        value: fileSelectionReasoningEffortVar
-      }
-      {
-        name: 'MODEL_API_VERSION'
-        value: modelApiVersionVar
-      }
-      {
         name: 'AZURE_SEARCH_INDEX'
         value: mcpSearchIndex
       }
@@ -1937,6 +1944,35 @@ module mcpServer './core/host/functions.bicep' = {
   }
 }
 
+// Event Grid System Topic for Storage Account
+module storageEventGrid './core/eventgrid/eventgrid-system-topic.bicep' = {
+  name: 'storage-eventgrid'
+  scope: resourceGroup
+  params: {
+    name: 'storage-events-${resourceToken}'
+    location: location
+    tags: tags
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    source: storage.outputs.id
+  }
+}
+
+// Event Grid Subscription for MCP Function
+module mcpEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+  name: 'org-files-event-subscription'
+  scope: resourceGroup
+  params: {
+    name: 'org-files-event-subscription-${resourceToken}'
+    systemTopicName: storageEventGrid.outputs.name
+    functionAppId: mcpServer.outputs.id
+    functionName: 'EventGridTrigger'
+    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+    subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/organization_files/'
+    fileExtensions: ['.xlsx', '.xls', '.csv']
+  }
+}
+
+
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_ZERO_TRUST string = networkIsolation ? 'TRUE' : 'FALSE'
 output AZURE_VM_NAME string = networkIsolation ? ztVmName : ''
@@ -1973,3 +2009,7 @@ output AZURE_VNET_NAME string = azureVnetName
 output AZURE_SEARCH_USE_MIS bool = azureSearchUseMIS
 
 output AZURE_REPORTS_JOBS_QUEUE_STORAGE_NAME string = reportJobsQueue.name
+output GPT41_CAPACITY int = gpt41Capacity
+output GPT5NANO_CAPACITY int = gpt5nanoCapacity
+output O4MINI_CAPACITY int = o4miniCapacity
+

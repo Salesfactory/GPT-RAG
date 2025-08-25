@@ -170,17 +170,26 @@
     "mcpCodeInterpreterAgentModel": {
       "value": "${AGENT_MODEL}"
     },
-    "fileSelectionModel": {
-      "value": "${FILE_SELECTION_MODEL}"
-    },
-    "fileSelectionReasoningEffort": {
-      "value": "${FILE_SELECTION_REASONING_EFFORT}"
-    },
-    "modelApiVersion": {
-      "value": "${MODEL_API_VERSION}"
-    },
     "deploymentTags": {
       "value": {}
+    },
+    "azureServiceBusNamespaceName": {
+      "value": "${AZURE_SERVICEBUS_NAMESPACE_NAME}"
+    },
+    "gpt41Capacity": {
+      "value": "${GPT41_CAPACITY}"
+    },
+    "gpt5nanoCapacity": {
+      "value": "${GPT5_NANO_CAPACITY}"
+    },
+    "o4miniCapacity": {
+      "value": "${O4_MINI_CAPACITY}"
+    },
+    "brandAnalysisModel": {
+      "value": "${BRAND_ANALYSIS_MODEL}"
+    },
+    "reasoningEffortReport": {
+      "value": "${REASONING_EFFORT}"
     }
   }
 }
