@@ -322,7 +322,7 @@ param embeddingsModelName string = 'text-embedding-ada-002'
 @allowed(['2'])
 param embeddingsModelVersion string = '2'
 @description('Embeddings model deployment name.')
-param embeddingsDeploymentName string = 'text-embedding-ada-002'
+param embeddingsDeploymentName string = 'text-embedding-3-small'
 @description('Embeddings model tokens per Minute Rate Limit (thousands). Default quota per model and region: 240')
 @minValue(1)
 @maxValue(240)
@@ -364,11 +364,11 @@ param azureSearchUseMIS bool = false
 
 // chunking
 @description('The number of tokens in each chunk.')
-param chunkNumTokens string = '2048'
+param chunkNumTokens string = '650'
 @description('The minimum chunk size below which chunks will be filtered.')
 param chunkMinSize string = '100'
 @description('The number of tokens to overlap between chunks.')
-param chunkTokenOverlap string = '200'
+param chunkTokenOverlap string = '125'
 
 // storage
 @description('Name of the container where source documents will be stored.')
@@ -1557,11 +1557,8 @@ module dataIngestion './core/host/functions.bicep' = {
     functionAppScaleLimit: 1
     minimumElasticInstanceCount: 1
     numberOfWorkers: 1
+    includeDeploymentStorage: true
     appSettings: [
-      {
-        name: 'DOCINT_API_VERSION'
-        value: docintApiVersion
-      }
       {
         name: 'AZURE_KEY_VAULT_NAME'
         value: keyVault.outputs.name
@@ -1579,32 +1576,8 @@ module dataIngestion './core/host/functions.bicep' = {
         value: visionIngestion.outputs.aiServiceKey
       }
       {
-        name: 'SEARCH_SERVICE'
+        name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
-      }
-      {
-        name: 'SEARCH_INDEX_NAME'
-        value: searchIndex
-      }
-      {
-        name: 'SEARCH_ANALYZER_NAME'
-        value: searchAnalyzerName
-      }
-      {
-        name: 'SEARCH_API_VERSION'
-        value: searchApiVersion
-      }
-      {
-        name: 'SEARCH_INDEX_INTERVAL'
-        value: searchIndexInterval
-      }
-      {
-        name: 'STORAGE_ACCOUNT_NAME'
-        value: storageAccountName
-      }
-      {
-        name: 'STORAGE_CONTAINER'
-        value: containerName
       }
       {
         name: 'AZURE_FORMREC_SERVICE'
@@ -1613,10 +1586,6 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name: 'AZURE_OPENAI_API_VERSION'
         value: openaiApiVersion
-      }
-      {
-        name: 'AZURE_SEARCH_APPROACH'
-        value: retrievalApproach
       }
       {
         name: 'AZURE_OPENAI_SERVICE_NAME'
@@ -1639,6 +1608,19 @@ module dataIngestion './core/host/functions.bicep' = {
         value: chunkTokenOverlap
       }
       {
+        name: 'COGNITIVE_SERVICES_KEY'
+        value: cognitiveServices.outputs.key
+      }
+      {
+        name: 'FORM_REC_API_VERSION'
+        value: '2024-11-30'
+      }
+      {
+        name: 'BLOB_SAS_TOKEN'
+        value: storage.outputs.blobSasToken
+      }
+
+      {
         name: 'NETWORK_ISOLATION'
         value: networkIsolation
       }
@@ -1659,6 +1641,17 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'INFO'
       }
     ]
+  }
+}
+
+// Add subscription-level Contributor role for data ingestion function app
+resource dataIngestionContributorRole 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(subscription().id, dataIngestionFunctionAppName, 'contributor')
+  scope: subscription()
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor role
+    principalId: dataIngestion.outputs.identityPrincipalId
+    principalType: 'ServicePrincipal'
   }
 }
 

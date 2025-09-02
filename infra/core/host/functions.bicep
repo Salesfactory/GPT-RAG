@@ -22,6 +22,7 @@ var runtimeNameAndVersion = '${runtimeName}|${runtimeVersion}'
 param vnetName string
 param subnetId string
 param networkIsolation bool
+param includeDeploymentStorage bool = false
 
 @description('Storage Account type')
 @allowed([
@@ -116,7 +117,10 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
           name: 'AZURE_KEY_VAULT_ENDPOINT'
           value: keyVault.properties.vaultUri
         }
-      ])
+      ], includeDeploymentStorage ? [{
+        name: 'DEPLOYMENT_STORAGE_CONNECTION_STRING'
+        value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+      }] : [])
       cors: {
         allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
       }      
@@ -133,3 +137,5 @@ output name string = functionApp.name
 output uri string = 'https://${functionApp.properties.defaultHostName}'
 output location string = functionApp.location
 output id string = functionApp.id
+output storageConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+output storageAccountName string = storageAccount.name

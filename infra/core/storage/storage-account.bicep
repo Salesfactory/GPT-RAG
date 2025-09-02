@@ -181,5 +181,6 @@ output name string = storage.name
 output id string = storage.id
 output primaryEndpoints object = storage.properties.primaryEndpoints
 output blobStorageConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0].value};EndpointSuffix=core.windows.net'
+output blobSasToken string = sasToken
 
 // to test run this module: az deployment group what-if --resource-group < rg-name> --template-file infra/core/storage/storage-account.bicep --parameters name=<storage-name> keyVaultName=<key-vault-name>
