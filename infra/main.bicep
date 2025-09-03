@@ -517,6 +517,10 @@ var emailUser = !empty(webAppEmailUser) ? webAppEmailUser : ''
 param webAppInvitationLink string = ''
 var invitationLink = !empty(webAppInvitationLink) ? webAppInvitationLink : ''
 
+@description('User feedback url')
+param webAppUserFeedbackUrl string = ''
+var userFeedbackUrl = !empty(webAppUserFeedbackUrl) ? webAppUserFeedbackUrl : ''
+
 // Orchestrator
 @description('Azure AI Search API Key')
 param azureAiSearchApiKey string = ''
@@ -1186,13 +1190,12 @@ module orchestratorCosmosAccess './core/security/cosmos-access.bicep' = {
   }
 }
 
-// Give the orchestrator access to AOAI
-module orchestratorOaiAccess './core/security/openai-access.bicep' = {
-  name: 'orchestrator-openai-access'
+// Give the orchestrator access to all AI resources in the resource group
+module orchestratorOaiAccess './core/security/openai-access-rg.bicep' = {
+  name: 'orchestrator-openai-access-rg'
   scope: resourceGroup
   params: {
     principalId: orchestrator.outputs.identityPrincipalId
-    openaiAccountName: openAi.outputs.name
   }
 }
 
@@ -1467,6 +1470,10 @@ module frontEnd 'core/host/appservice.bicep' = {
         name: 'FINANCIAL_AGENT_CONTAINER'
         value: storageFinancialAgentContainerName
       }
+      {
+        name: 'USER_FEEDBACK_URL'
+        value: userFeedbackUrl
+      } 
     ]
   }
 }
@@ -1721,6 +1728,21 @@ module deepseekR1Deployment 'core/ai/r1-deployment.bicep' = {
   scope: resourceGroup
   params: {
     name: r1ServiceName
+  }
+}
+
+// Create Azure AI Foundry project on the r1 service
+module agentProject 'core/ai/ai-foundry-project.bicep' = {
+  name: 'agentProject'
+  scope: resourceGroup
+  dependsOn: [
+    deepseekR1Deployment
+  ]
+  params: {
+    aiServiceName: '${r1ServiceName}-aiservice'
+    projectName: 'agent-project'
+    location: location
+    tags: tags
   }
 }
 
