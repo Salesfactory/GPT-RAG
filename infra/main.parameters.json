@@ -190,9 +190,6 @@
     },
     "reasoningEffortReport": {
       "value": "${REASONING_EFFORT}"
-    },
-    "webAppUserFeedbackUrl": {
-      "value": "${USER_FEEDBACK_URL}"
     }
   }
 }
