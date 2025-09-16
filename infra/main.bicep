@@ -1657,6 +1657,16 @@ module dataIngestionBlobStorageAccess './core/security/blobstorage-access.bicep'
   }
 }
 
+// Give the data ingestion access to Azure OpenAI
+module dataIngestionOaiAccess './core/security/openai-access.bicep' = {
+  name: 'data-ingestion-openai-access'
+  scope: resourceGroup
+  params: {
+    principalId: dataIngestion.outputs.identityPrincipalId
+    openaiAccountName: openAi.outputs.name
+  }
+}
+
 module ingestionPe './core/network/private-endpoint.bicep' = if (networkIsolation) {
   name: 'ingestionPe'
   scope: resourceGroup
