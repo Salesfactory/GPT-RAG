@@ -319,7 +319,7 @@ param chatGptDeploymentName string = 'chat'
 @allowed(['text-embedding-ada-002', 'text-embedding-3-small'])
 param embeddingsModelName string = 'text-embedding-3-small'
 @description('Embeddings model version.')
-@allowed(['1'])
+@allowed(['1', '2'])
 param embeddingsModelVersion string = '1'
 @description('Embeddings model deployment name.')
 param embeddingsDeploymentName string = 'text-embedding-3-small'
