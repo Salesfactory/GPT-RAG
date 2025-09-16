@@ -1078,11 +1078,11 @@ module orchestrator './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_INFERENCE_SDK_ENDPOINT'
-        value: deepseekR1Deployment.outputs.r1Endpoint
+        value: gptDeployment.outputs.r1Endpoint
       }
       {
         name: 'AZURE_INFERENCE_SDK_KEY'
-        value: deepseekR1Deployment.outputs.r1Key
+        value: gptDeployment.outputs.r1Key
       }
       {
         name: 'AZURE_STORAGE_CONNECTION_STRING'
@@ -1701,7 +1701,7 @@ module cognitiveServices 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
-module deepseekR1Deployment 'core/ai/r1-deployment.bicep' = {
+module gptDeployment 'core/ai/r1-deployment.bicep' = {
   name: 'deepseekR1Deployment'
   scope: resourceGroup
   params: {
@@ -1714,7 +1714,7 @@ module agentProject 'core/ai/ai-foundry-project.bicep' = {
   name: 'agentProject'
   scope: resourceGroup
   dependsOn: [
-    deepseekR1Deployment
+    gptDeployment
   ]
   params: {
     aiServiceName: '${r1ServiceName}-aiservice'

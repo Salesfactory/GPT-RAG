@@ -4,7 +4,7 @@ param gpt41Capacity int = 500
 param o4MiniCapacity int = 150
 var aiServiceName = '${name}-aiservice'
 
-resource deepseekR1AIService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
+resource gptAIService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   name: aiServiceName
   location: location
   sku: {
@@ -21,7 +21,7 @@ resource deepseekR1AIService 'Microsoft.CognitiveServices/accounts@2024-10-01' =
 }
 
 resource gpt41Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: deepseekR1AIService
+  parent: gptAIService
   name: 'gpt-4.1'
 
   sku: {
@@ -41,7 +41,7 @@ resource gpt41Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-
 }
 
 resource o4MiniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: deepseekR1AIService
+  parent: gptAIService
   name: 'o4-mini'
   dependsOn: [
     gpt41Deployment
@@ -61,5 +61,5 @@ resource o4MiniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024
     raiPolicyName: 'Microsoft.DefaultV2'
   }
 }
-output r1Endpoint string = 'https://${deepseekR1AIService.name}.cognitiveservices.azure.com/models'
-output r1Key string = deepseekR1AIService.listKeys().key1
+output r1Endpoint string = 'https://${gptAIService.name}.cognitiveservices.azure.com/models'
+output r1Key string = gptAIService.listKeys().key1
