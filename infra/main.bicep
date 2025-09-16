@@ -1290,6 +1290,25 @@ module mcpServerAiFoundryAccess './core/security/ai-foundry-access.bicep' = {
   }
 }
 
+// Assign Cognitive Services User role for the multi-service AI account to data ingestion function
+module cognitiveServicesUserAccess './core/security/cognitive-services-user-access.bicep' = {
+  name: 'data-ingestion-cognitive-services-user-access'
+  scope: resourceGroup
+  params: {
+    cognitiveServiceAccountName: cognitiveServices.outputs.name
+    principalId: dataIngestion.outputs.identityPrincipalId
+  }
+}
+
+// Assign Contributor role at resource group level to data ingestion function
+module contributorRgAccess './core/security/contributor-rg-access.bicep' = {
+  name: 'data-ingestion-contributor-rg-access'
+  scope: resourceGroup
+  params: {
+    principalId: dataIngestion.outputs.identityPrincipalId
+  }
+}
+
 module frontEnd 'core/host/appservice.bicep' = {
   name: 'frontend'
   scope: resourceGroup
