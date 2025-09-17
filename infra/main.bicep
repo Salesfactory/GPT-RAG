@@ -1617,6 +1617,10 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'text-embedding-3-small'
       }
       {
+        name:'FORM_REC_API_VERSION'
+        value: '2024-11-30'
+      }
+      {
         name: 'NUM_TOKENS'
         value: chunkNumTokens
       }
