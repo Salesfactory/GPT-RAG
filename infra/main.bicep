@@ -1713,9 +1713,6 @@ module gptDeployment 'core/ai/r1-deployment.bicep' = {
 module agentProject 'core/ai/ai-foundry-project.bicep' = {
   name: 'agentProject'
   scope: resourceGroup
-  dependsOn: [
-    gptDeployment
-  ]
   params: {
     aiServiceName: '${r1ServiceName}-aiservice'
     projectName: 'agent-project'

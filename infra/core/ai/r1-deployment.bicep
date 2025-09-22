@@ -43,6 +43,9 @@ resource gpt41Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-
 resource o4MiniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
   parent: gptAIService
   name: 'o4-mini'
+  dependsOn: [
+    gpt41Deployment
+  ]
   sku: {
     name: 'DataZoneStandard'
     capacity: o4MiniCapacity
