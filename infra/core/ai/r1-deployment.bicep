@@ -4,7 +4,7 @@ param gpt41Capacity int = 500
 param o4MiniCapacity int = 150
 var aiServiceName = '${name}-aiservice'
 
-resource deepseekR1AIService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
+resource gptAIService 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
   name: aiServiceName
   location: location
   sku: {
@@ -19,30 +19,11 @@ resource deepseekR1AIService 'Microsoft.CognitiveServices/accounts@2024-10-01' =
     publicNetworkAccess: 'Enabled'
   }
 }
-resource accounts_r1ai0_vm2b2htvuuclm_aiservice_name_DeepSeek_V3_0324 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: deepseekR1AIService
-  name: 'DeepSeek-V3-0324'
-  sku: {
-    name: 'GlobalStandard'
-    capacity: 3000
-  }
-  properties: {
-    model: {
-      format: 'DeepSeek'
-      name: 'DeepSeek-V3-0324'
-      version: '1'
-    }
-    versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
-    currentCapacity: 1
-    raiPolicyName: 'Microsoft.Default'
-  }
-}
+
 resource gpt41Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: deepseekR1AIService
+  parent: gptAIService
   name: 'gpt-4.1'
-  dependsOn: [
-    accounts_r1ai0_vm2b2htvuuclm_aiservice_name_DeepSeek_V3_0324
-  ]
+
   sku: {
     name: 'DataZoneStandard'
     capacity: gpt41Capacity
@@ -60,10 +41,9 @@ resource gpt41Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-
 }
 
 resource o4MiniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: deepseekR1AIService
+  parent: gptAIService
   name: 'o4-mini'
   dependsOn: [
-    accounts_r1ai0_vm2b2htvuuclm_aiservice_name_DeepSeek_V3_0324
     gpt41Deployment
   ]
   sku: {
@@ -81,5 +61,5 @@ resource o4MiniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024
     raiPolicyName: 'Microsoft.DefaultV2'
   }
 }
-output r1Endpoint string = 'https://${deepseekR1AIService.name}.cognitiveservices.azure.com/models'
-output r1Key string = deepseekR1AIService.listKeys().key1
+output r1Endpoint string = 'https://${gptAIService.name}.cognitiveservices.azure.com/models'
+output r1Key string = gptAIService.listKeys().key1
