@@ -716,10 +716,10 @@ resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
 
 resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
-  name: 'report_jobs'
+  name: 'reportJobs'
   properties: {
     resource: {
-      id: 'report_jobs'
+      id: 'reportJobs'
       partitionKey: {
         paths: ['/organization_id']
         kind: 'Hash'
