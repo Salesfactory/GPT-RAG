@@ -316,11 +316,11 @@ param speechSynthesisVoiceName string
 // openai
 param chatGptDeploymentName string = 'chat'
 @description('Embeddings model used to generate vector embeddings. Don\'t forget to check region availability.')
-@allowed(['text-embedding-ada-002'])
+@allowed(['text-embedding-ada-002', 'text-embedding-3-small'])
 param embeddingsModelName string = 'text-embedding-ada-002'
 @description('Embeddings model version.')
-@allowed(['2'])
-param embeddingsModelVersion string = '2'
+@allowed(['1', '2'])
+param embeddingsModelVersion string = '1'
 @description('Embeddings model deployment name.')
 param embeddingsDeploymentName string = 'text-embedding-ada-002'
 @description('Embeddings model tokens per Minute Rate Limit (thousands). Default quota per model and region: 240')
@@ -364,11 +364,11 @@ param azureSearchUseMIS bool = false
 
 // chunking
 @description('The number of tokens in each chunk.')
-param chunkNumTokens string = '2048'
+param chunkNumTokens string = '650'
 @description('The minimum chunk size below which chunks will be filtered.')
 param chunkMinSize string = '100'
 @description('The number of tokens to overlap between chunks.')
-param chunkTokenOverlap string = '200'
+param chunkTokenOverlap string = '125'
 
 // storage
 @description('Name of the container where source documents will be stored.')
@@ -1078,11 +1078,11 @@ module orchestrator './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_INFERENCE_SDK_ENDPOINT'
-        value: deepseekR1Deployment.outputs.r1Endpoint
+        value: gptDeployment.outputs.r1Endpoint
       }
       {
         name: 'AZURE_INFERENCE_SDK_KEY'
-        value: deepseekR1Deployment.outputs.r1Key
+        value: gptDeployment.outputs.r1Key
       }
       {
         name: 'AZURE_STORAGE_CONNECTION_STRING'
@@ -1287,6 +1287,25 @@ module mcpServerAiFoundryAccess './core/security/ai-foundry-access.bicep' = {
   scope: resourceGroup
   params: {
     principalId: mcpServer.outputs.identityPrincipalId
+  }
+}
+
+// Assign Cognitive Services User role for the multi-service AI account to data ingestion function
+module cognitiveServicesUserAccess './core/security/cognitive-services-user-access.bicep' = {
+  name: 'data-ingestion-cognitive-services-user-access'
+  scope: resourceGroup
+  params: {
+    cognitiveServiceAccountName: cognitiveServices.outputs.name
+    principalId: dataIngestion.outputs.identityPrincipalId
+  }
+}
+
+// Assign Contributor role at resource group level to data ingestion function
+module contributorRgAccess './core/security/contributor-rg-access.bicep' = {
+  name: 'data-ingestion-contributor-rg-access'
+  scope: resourceGroup
+  params: {
+    principalId: dataIngestion.outputs.identityPrincipalId
   }
 }
 
@@ -1566,16 +1585,8 @@ module dataIngestion './core/host/functions.bicep' = {
     numberOfWorkers: 1
     appSettings: [
       {
-        name: 'DOCINT_API_VERSION'
-        value: docintApiVersion
-      }
-      {
         name: 'AZURE_KEY_VAULT_NAME'
         value: keyVault.outputs.name
-      }
-      {
-        name: 'FUNCTION_APP_NAME'
-        value: dataIngestionFunctionAppName
       }
       {
         name: 'AZ_COMPUTER_VISION_ENDPOINT'
@@ -1586,32 +1597,8 @@ module dataIngestion './core/host/functions.bicep' = {
         value: visionIngestion.outputs.aiServiceKey
       }
       {
-        name: 'SEARCH_SERVICE'
+        name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
-      }
-      {
-        name: 'SEARCH_INDEX_NAME'
-        value: searchIndex
-      }
-      {
-        name: 'SEARCH_ANALYZER_NAME'
-        value: searchAnalyzerName
-      }
-      {
-        name: 'SEARCH_API_VERSION'
-        value: searchApiVersion
-      }
-      {
-        name: 'SEARCH_INDEX_INTERVAL'
-        value: searchIndexInterval
-      }
-      {
-        name: 'STORAGE_ACCOUNT_NAME'
-        value: storageAccountName
-      }
-      {
-        name: 'STORAGE_CONTAINER'
-        value: containerName
       }
       {
         name: 'AZURE_FORMREC_SERVICE'
@@ -1622,16 +1609,16 @@ module dataIngestion './core/host/functions.bicep' = {
         value: openaiApiVersion
       }
       {
-        name: 'AZURE_SEARCH_APPROACH'
-        value: retrievalApproach
-      }
-      {
         name: 'AZURE_OPENAI_SERVICE_NAME'
         value: openAiServiceName
       }
       {
         name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT'
-        value: embeddingsDeploymentName
+        value: 'text-embedding-3-small'
+      }
+      {
+        name:'FORM_REC_API_VERSION'
+        value: '2024-11-30'
       }
       {
         name: 'NUM_TOKENS'
@@ -1665,6 +1652,10 @@ module dataIngestion './core/host/functions.bicep' = {
         name: 'LOGLEVEL'
         value: 'INFO'
       }
+      {
+        name:'COGNITIVE_SERVICES_KEY'
+        value: cognitiveServices.outputs.key
+      }
     ]
   }
 }
@@ -1686,6 +1677,16 @@ module dataIngestionBlobStorageAccess './core/security/blobstorage-access.bicep'
   params: {
     storageAccountName: storage.outputs.name
     principalId: dataIngestion.outputs.identityPrincipalId
+  }
+}
+
+// Give the data ingestion access to Azure OpenAI
+module dataIngestionOaiAccess './core/security/openai-access.bicep' = {
+  name: 'data-ingestion-openai-access'
+  scope: resourceGroup
+  params: {
+    principalId: dataIngestion.outputs.identityPrincipalId
+    openaiAccountName: openAi.outputs.name
   }
 }
 
@@ -1723,7 +1724,7 @@ module cognitiveServices 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
-module deepseekR1Deployment 'core/ai/r1-deployment.bicep' = {
+module gptDeployment 'core/ai/r1-deployment.bicep' = {
   name: 'deepseekR1Deployment'
   scope: resourceGroup
   params: {
@@ -1736,7 +1737,7 @@ module agentProject 'core/ai/ai-foundry-project.bicep' = {
   name: 'agentProject'
   scope: resourceGroup
   dependsOn: [
-    deepseekR1Deployment
+    gptDeployment
   ]
   params: {
     aiServiceName: '${r1ServiceName}-aiservice'
@@ -1916,6 +1917,10 @@ module mcpServer './core/host/functions.bicep' = {
       {
         name: 'TAVILY_API_KEY'
         value: orchestratorTavilyApiKeyVar
+      }
+      {
+        name: 'ANTHROPIC_API_KEY'
+        value: orchestratorAnthropicApiKeyVar
       }
       {
         name: 'AZURE_SEARCH_INDEX'
