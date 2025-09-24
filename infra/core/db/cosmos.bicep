@@ -534,41 +534,6 @@ resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases
   }
 }
 
-resource reportsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'reports'
-  properties: {
-    resource: {
-      id: 'reports'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource schedulesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: 'schedules'
