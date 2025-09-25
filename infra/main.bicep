@@ -552,6 +552,11 @@ var orchestratorTavilyApiKeyVar = !empty(orchestratorTavilyApiKey) ? orchestrato
 param orchestratorAnthropicApiKey string = ''
 var orchestratorAnthropicApiKeyVar = !empty(orchestratorAnthropicApiKey) ? orchestratorAnthropicApiKey : ''
 
+@description('OpenAI API Key used by the MCP server.')
+@secure()
+param mcpOpenAiApiKey string = ''
+var mcpOpenAiApiKeyVar = !empty(mcpOpenAiApiKey) ? mcpOpenAiApiKey : ''
+
 @description('Langsmith API Key for tracing')
 @secure()
 param langsmithApiKey string = ''
@@ -1921,6 +1926,10 @@ module mcpServer './core/host/functions.bicep' = {
       {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
+      }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKeyVar
       }
       {
         name: 'AZURE_SEARCH_INDEX'

@@ -144,40 +144,6 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
   }
 }
 
-resource companyAnalysisContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'companyAnalysis'
-  properties: {
-    resource: {
-      defaultTtl: 86400
-      id: 'companyAnalysis'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      throughput: throughput
-    }
-  }
-}
 resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: containerName
@@ -568,41 +534,6 @@ resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases
   }
 }
 
-resource reportsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'reports'
-  properties: {
-    resource: {
-      id: 'reports'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource schedulesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: 'schedules'
@@ -750,10 +681,10 @@ resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
 
 resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
-  name: 'report_jobs'
+  name: 'reportJobs'
   properties: {
     resource: {
-      id: 'report_jobs'
+      id: 'reportJobs'
       partitionKey: {
         paths: ['/organization_id']
         kind: 'Hash'
