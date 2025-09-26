@@ -30,24 +30,6 @@ param containers array = [
     defaultEncryptionScope: '$account-encryption-key'
     denyEncryptionScopeOverride: false
   }
-  {
-    name: 'emails-archived'
-    publicAccess: 'None'
-    defaultEncryptionScope: '$account-encryption-key'
-    denyEncryptionScopeOverride: false
-  }
-  {
-    name: 'financial-reports'
-    publicAccess: 'None'
-    defaultEncryptionScope: '$account-encryption-key'
-    denyEncryptionScopeOverride: false
-  }
-  {
-    name: 'financial-reports-archived'
-    publicAccess: 'None'
-    defaultEncryptionScope: '$account-encryption-key'
-    denyEncryptionScopeOverride: false
-  }
 ]
 
 // Add parameter for SAS token expiry with utcNow() as default
