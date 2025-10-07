@@ -580,7 +580,7 @@ resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
       id: 'auditLogs'
       partitionKey: {
         paths: [
-          '/id'
+          '/organization_id'
         ]
         kind: 'Hash'
       }
