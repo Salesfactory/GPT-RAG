@@ -200,43 +200,6 @@ resource modelsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/con
   }
 }
 
-resource promptsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'prompts'
-  properties: {
-    resource: {
-      defaultTtl: 604800
-      id: 'prompts'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource settingsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: 'settings'
@@ -614,10 +577,10 @@ resource subscriptionEmailsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
 
 resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
-  name: 'OrganizationWebsites'
+  name: 'organizationWebsites'
   properties: {
     resource: {
-      id: 'OrganizationWebsites'
+      id: 'organizationWebsites'
       partitionKey: {
         paths: [
           '/organizationId'
