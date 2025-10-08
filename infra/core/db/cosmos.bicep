@@ -577,10 +577,10 @@ resource subscriptionEmailsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
 
 resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
-  name: 'organizationWebsites'
+  name: 'OrganizationWebsites'
   properties: {
     resource: {
-      id: 'organizationWebsites'
+      id: 'OrganizationWebsites'
       partitionKey: {
         paths: [
           '/organizationId'
