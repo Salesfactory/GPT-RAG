@@ -402,7 +402,7 @@ resource invitationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
       id: 'invitations'
       partitionKey: {
         paths: [
-          '/id'
+          '/organization_id'
         ]
         kind: 'Hash'
       }
