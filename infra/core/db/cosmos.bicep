@@ -200,43 +200,6 @@ resource modelsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/con
   }
 }
 
-resource promptsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'prompts'
-  properties: {
-    resource: {
-      defaultTtl: 604800
-      id: 'prompts'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource settingsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: 'settings'
@@ -294,42 +257,6 @@ resource usersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/cont
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-  }
-}
-
-resource userTokensContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'userTokens'
-  properties: {
-    resource: {
-      id: 'userTokens'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -503,44 +430,6 @@ resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases
   }
 }
 
-resource schedulesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'schedules'
-  properties: {
-    resource: {
-      id: 'schedules'
-      partitionKey: {
-        paths: [
-          '/companyId'
-          '/reportType'
-        ]
-        kind: 'MultiHash'
-        version: 2
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        indexingMode: 'consistent'
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: 'auditLogs'
@@ -576,48 +465,12 @@ resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
   }
 }
 
-resource subscriptionEmailsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'subscription_emails'
-  properties: {
-    resource: {
-      id: 'subscription_emails'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'MultiHash'
-        version: 2
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
-  name: 'OrganizationWebsites'
+  name: 'organizationWebsites'
   properties: {
     resource: {
-      id: 'OrganizationWebsites'
+      id: 'organizationWebsites'
       partitionKey: {
         paths: [
           '/organizationId'
