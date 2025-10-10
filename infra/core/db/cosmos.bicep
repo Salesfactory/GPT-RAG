@@ -465,42 +465,6 @@ resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
   }
 }
 
-resource subscriptionEmailsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
-  parent: database
-  name: 'subscription_emails'
-  properties: {
-    resource: {
-      id: 'subscription_emails'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'MultiHash'
-        version: 2
-      }
-      analyticalStorageTtl: analyticalStoreTTL
-      indexingPolicy: {
-        automatic: true
-        includedPaths: [
-          {
-            path: '/*'
-          }
-        ]
-        excludedPaths: [
-          {
-            path: '/"_etag"/?'
-          }
-        ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
-  }
-}
-
 resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
   parent: database
   name: 'organizationWebsites'
