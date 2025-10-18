@@ -579,9 +579,6 @@ var langsmithTracingV2Var = !empty(langsmithTracingV2) ? langsmithTracingV2 : ''
 @description('Capacity for the gpt-4.1 model')
 param gpt41Capacity int
 
-@description('Capacity for the gpt-5-nano model')
-param gpt5nanoCapacity int
-
 @description('Capacity for the o4-mini model')
 param o4miniCapacity int
 
