@@ -579,9 +579,6 @@ var langsmithTracingV2Var = !empty(langsmithTracingV2) ? langsmithTracingV2 : ''
 @description('Capacity for the gpt-4.1 model')
 param gpt41Capacity int
 
-@description('Capacity for the gpt-5-nano model')
-param gpt5nanoCapacity int
-
 @description('Capacity for the o4-mini model')
 param o4miniCapacity int
 
@@ -1813,7 +1810,6 @@ module o1Deployment 'core/ai/o1-deployment.bicep' = {
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     tags: tags
     gpt41Capacity: gpt41Capacity
-    gpt5nanoCapacity: gpt5nanoCapacity
     o4miniCapacity: o4miniCapacity
   }
 }
@@ -2047,5 +2043,4 @@ output AZURE_SEARCH_USE_MIS bool = azureSearchUseMIS
 
 output AZURE_REPORTS_JOBS_QUEUE_STORAGE_NAME string = reportJobsQueue.name
 output GPT41_CAPACITY int = gpt41Capacity
-output GPT5NANO_CAPACITY int = gpt5nanoCapacity
 output O4MINI_CAPACITY int = o4miniCapacity
