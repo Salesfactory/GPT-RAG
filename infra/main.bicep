@@ -327,6 +327,14 @@ param embeddingsDeploymentName string = 'text-embedding-ada-002'
 @minValue(1)
 @maxValue(240)
 param embeddingsDeploymentCapacity int = 20
+@description('text embedding 3 small model name.')
+@allowed(['text-embedding-3-small'])
+param TextEmbedding3SmallModelName string = 'text-embedding-3-small'
+@description('text embedding 3 small model version.')
+@allowed(['1'])
+param TextEmbedding3SmallModelVersion string = '1'
+@description('text embedding 3 small model deployment name.')
+param TextEmbedding3SmallDeploymentName string = 'text-embedding-3-small'
 @description('Azure OpenAI API version.')
 @allowed(['2025-04-01-preview'])
 param openaiApiVersion string = '2025-04-01-preview'
@@ -1811,6 +1819,9 @@ module o1Deployment 'core/ai/o1-deployment.bicep' = {
     tags: tags
     gpt41Capacity: gpt41Capacity
     o4miniCapacity: o4miniCapacity
+    TextEmbedding3SmallModelName: TextEmbedding3SmallModelName
+    TextEmbedding3SmallModelVersion: TextEmbedding3SmallModelVersion
+    TextEmbedding3SmallDeploymentName: TextEmbedding3SmallDeploymentName
   }
 }
 

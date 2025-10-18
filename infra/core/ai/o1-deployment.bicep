@@ -4,6 +4,9 @@ param publicNetworkAccess string = 'Enabled'
 param kind string = 'OpenAI'
 param gpt41Capacity int
 param o4miniCapacity int
+param TextEmbedding3SmallModelName string
+param TextEmbedding3SmallModelVersion string
+param TextEmbedding3SmallDeploymentName string
 param sku object = {
   name: 'S0'
 }
@@ -64,5 +67,28 @@ resource o4miniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024
     raiPolicyName: 'Microsoft.DefaultV2'
   }
 }
+
+resource textEmbedding3SmallDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
+  parent: o1Account
+  name: TextEmbedding3SmallDeploymentName
+  dependsOn: [
+    o4miniDeployment
+  ]
+  sku: {
+    name: 'GlobalStandard'
+    capacity: 500
+  }
+  properties: {
+    model: {
+      format: kind
+      name: TextEmbedding3SmallModelName
+      version: TextEmbedding3SmallModelVersion
+    }
+    versionUpgradeOption: 'NoAutoUpgrade'
+    currentCapacity: 500
+    raiPolicyName: 'Microsoft.DefaultV2'
+  }
+}
+
 output o1Endpoint string = o1Account.properties.endpoint
 output o1Key string = o1Account.listKeys().key1
