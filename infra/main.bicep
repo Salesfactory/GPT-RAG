@@ -1602,14 +1602,6 @@ module dataIngestion './core/host/functions.bicep' = {
         value: keyVault.outputs.name
       }
       {
-        name: 'AZ_COMPUTER_VISION_ENDPOINT'
-        value: visionIngestion.outputs.aiServiceEndpoint
-      }
-      {
-        name: 'AZ_COMPUTER_VISION_KEY'
-        value: visionIngestion.outputs.aiServiceKey
-      }
-      {
         name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
       }
@@ -1623,7 +1615,11 @@ module dataIngestion './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_OPENAI_SERVICE_NAME'
-        value: openAiServiceName
+        value: o1ServiceName
+      }
+      {
+        name: 'AZURE_STORAGE_ACCOUNT'
+        value: storageAccountName
       }
       {
         name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT'
