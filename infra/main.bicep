@@ -1698,6 +1698,16 @@ module dataIngestionOaiAccess './core/security/openai-access.bicep' = {
   }
 }
 
+// Give the data ingestion access to o1 Azure OpenAI
+module dataIngestionO1Access './core/security/openai-access.bicep' = {
+  name: 'data-ingestion-o1-access'
+  scope: resourceGroup
+  params: {
+    principalId: dataIngestion.outputs.identityPrincipalId
+    openaiAccountName: o1ServiceName
+  }
+}
+
 module ingestionPe './core/network/private-endpoint.bicep' = if (networkIsolation) {
   name: 'ingestionPe'
   scope: resourceGroup
