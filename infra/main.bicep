@@ -386,7 +386,7 @@ param storageFinancialAgentContainerName string = 'fa-documents'
 @description('Name of the container where user documents will be stored.')
 param storageUserDocumentsContainerName string = 'user-documents'
 @description(' Name of the container where test images will be stored.')
-param storageTestImagesContainerName string = 'test-images'
+param storageTestImagesContainerName string = 'ragindex-test-images'
 // Service names
 // The name for each service can be set from environment variables which are mapped in main.parameters.json.
 // Then no maping to specific name is defined, a unique name is generated for each service based on the resourceToken created above.
