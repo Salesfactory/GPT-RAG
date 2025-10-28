@@ -3,8 +3,10 @@ param location string = 'eastus2'
 param publicNetworkAccess string = 'Enabled'
 param kind string = 'OpenAI'
 param gpt41Capacity int
-param gpt5nanoCapacity int
 param o4miniCapacity int
+param TextEmbedding3SmallModelName string
+param TextEmbedding3SmallModelVersion string
+param TextEmbedding3SmallDeploymentName string
 param sku object = {
   name: 'S0'
 }
@@ -43,34 +45,12 @@ resource gpt41Deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-
     raiPolicyName: 'Microsoft.DefaultV2'
   }
 }
-resource gpt5nanoDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: o1Account
-  name: 'gpt-5-nano'
-  dependsOn: [
-    gpt41Deployment
-  ]
-  sku: {
-    name: 'GlobalStandard'
-    capacity: gpt5nanoCapacity
-  }
-  properties: {
-    model: {
-      format: kind
-      name: 'gpt-5-nano'
-      version: '2025-08-07'
-    }
-    versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
-    currentCapacity: gpt5nanoCapacity
-    raiPolicyName: 'Microsoft.DefaultV2'
-  }
-}
 
 resource o4miniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
   parent: o1Account
   name: 'o4-mini'
   dependsOn: [
     gpt41Deployment
-    gpt5nanoDeployment
   ]
   sku: {
     name: 'DataZoneStandard'
@@ -87,5 +67,28 @@ resource o4miniDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024
     raiPolicyName: 'Microsoft.DefaultV2'
   }
 }
+
+resource textEmbedding3SmallDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
+  parent: o1Account
+  name: TextEmbedding3SmallDeploymentName
+  dependsOn: [
+    o4miniDeployment
+  ]
+  sku: {
+    name: 'GlobalStandard'
+    capacity: 500
+  }
+  properties: {
+    model: {
+      format: kind
+      name: TextEmbedding3SmallModelName
+      version: TextEmbedding3SmallModelVersion
+    }
+    versionUpgradeOption: 'NoAutoUpgrade'
+    currentCapacity: 500
+    raiPolicyName: 'Microsoft.DefaultV2'
+  }
+}
+
 output o1Endpoint string = o1Account.properties.endpoint
 output o1Key string = o1Account.listKeys().key1

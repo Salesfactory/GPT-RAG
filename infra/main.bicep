@@ -327,6 +327,14 @@ param embeddingsDeploymentName string = 'text-embedding-ada-002'
 @minValue(1)
 @maxValue(240)
 param embeddingsDeploymentCapacity int = 20
+@description('text embedding 3 small model name.')
+@allowed(['text-embedding-3-small'])
+param TextEmbedding3SmallModelName string = 'text-embedding-3-small'
+@description('text embedding 3 small model version.')
+@allowed(['1'])
+param TextEmbedding3SmallModelVersion string = '1'
+@description('text embedding 3 small model deployment name.')
+param TextEmbedding3SmallDeploymentName string = 'text-embedding-3-small'
 @description('Azure OpenAI API version.')
 @allowed(['2025-04-01-preview'])
 param openaiApiVersion string = '2025-04-01-preview'
@@ -377,6 +385,8 @@ param storageContainerName string = 'documents'
 param storageFinancialAgentContainerName string = 'fa-documents'
 @description('Name of the container where user documents will be stored.')
 param storageUserDocumentsContainerName string = 'user-documents'
+@description(' Name of the container where test images will be stored.')
+param storageTestImagesContainerName string = 'ragindex-test-images'
 // Service names
 // The name for each service can be set from environment variables which are mapped in main.parameters.json.
 // Then no maping to specific name is defined, a unique name is generated for each service based on the resourceToken created above.
@@ -579,9 +589,6 @@ var langsmithTracingV2Var = !empty(langsmithTracingV2) ? langsmithTracingV2 : ''
 @description('Capacity for the gpt-4.1 model')
 param gpt41Capacity int
 
-@description('Capacity for the gpt-5-nano model')
-param gpt5nanoCapacity int
-
 @description('Capacity for the o4-mini model')
 param o4miniCapacity int
 
@@ -759,6 +766,7 @@ module storage './core/storage/storage-account.bicep' = {
       { name: containerName, publicAccess: 'None' }
       { name: storageUserDocumentsContainerName, publicAccess: 'None' }
       { name: storageFinancialAgentContainerName, publicAccess: 'None' }
+      { name: storageTestImagesContainerName, publicAccess: 'None' }
     ]
     keyVaultName: keyVault.outputs.name
     secretName: 'storageConnectionString'
@@ -1597,14 +1605,6 @@ module dataIngestion './core/host/functions.bicep' = {
         value: keyVault.outputs.name
       }
       {
-        name: 'AZ_COMPUTER_VISION_ENDPOINT'
-        value: visionIngestion.outputs.aiServiceEndpoint
-      }
-      {
-        name: 'AZ_COMPUTER_VISION_KEY'
-        value: visionIngestion.outputs.aiServiceKey
-      }
-      {
         name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
       }
@@ -1618,7 +1618,11 @@ module dataIngestion './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_OPENAI_SERVICE_NAME'
-        value: openAiServiceName
+        value: o1ServiceName
+      }
+      {
+        name: 'AZURE_STORAGE_ACCOUNT'
+        value: storageAccountName
       }
       {
         name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT'
@@ -1695,6 +1699,16 @@ module dataIngestionOaiAccess './core/security/openai-access.bicep' = {
   params: {
     principalId: dataIngestion.outputs.identityPrincipalId
     openaiAccountName: openAi.outputs.name
+  }
+}
+
+// Give the data ingestion access to o1 Azure OpenAI
+module dataIngestionO1Access './core/security/openai-access.bicep' = {
+  name: 'data-ingestion-o1-access'
+  scope: resourceGroup
+  params: {
+    principalId: dataIngestion.outputs.identityPrincipalId
+    openaiAccountName: o1ServiceName
   }
 }
 
@@ -1813,8 +1827,10 @@ module o1Deployment 'core/ai/o1-deployment.bicep' = {
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     tags: tags
     gpt41Capacity: gpt41Capacity
-    gpt5nanoCapacity: gpt5nanoCapacity
     o4miniCapacity: o4miniCapacity
+    TextEmbedding3SmallModelName: TextEmbedding3SmallModelName
+    TextEmbedding3SmallModelVersion: TextEmbedding3SmallModelVersion
+    TextEmbedding3SmallDeploymentName: TextEmbedding3SmallDeploymentName
   }
 }
 
@@ -2047,5 +2063,4 @@ output AZURE_SEARCH_USE_MIS bool = azureSearchUseMIS
 
 output AZURE_REPORTS_JOBS_QUEUE_STORAGE_NAME string = reportJobsQueue.name
 output GPT41_CAPACITY int = gpt41Capacity
-output GPT5NANO_CAPACITY int = gpt5nanoCapacity
 output O4MINI_CAPACITY int = o4miniCapacity
