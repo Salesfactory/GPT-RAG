@@ -7,9 +7,6 @@ param publicNetworkAccess string = 'Enabled'
 @description('Location for the Cosmos DB account.')
 param location string = resourceGroup().location
 
-@description('Minimum throughput for the Cosmos DB account.')
-param throughput int = 400
-
 param tags object = {}
 
 @description('The name for the container')
@@ -41,15 +38,10 @@ param systemManagedFailover bool = true
 @description('The name for the database')
 param databaseName string
 
-@description('Maximum autoscale throughput for the container')
+@description('Maximum autoscale throughput for the database (shared across all containers)')
 @minValue(1000)
 @maxValue(1000000)
-param autoscaleMaxThroughput int = 1000
-
-@description('Time to Live for data in analytical store. (-1 no expiry)')
-@minValue(-1)
-@maxValue(2147483647)
-param analyticalStoreTTL int = -1
+param databaseAutoscaleMaxThroughput int = 1000
 
 param secretName string = 'azureDBkey'
 
@@ -93,7 +85,7 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: systemManagedFailover
     publicNetworkAccess: publicNetworkAccess
-    enableAnalyticalStorage: true
+    enableAnalyticalStorage: false
   }
 }
 
@@ -103,6 +95,11 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15
   properties: {
     resource: {
       id: databaseName
+    }
+    options: {
+      autoscaleSettings: {
+        maxThroughput: databaseAutoscaleMaxThroughput
+      }
     }
   }
 }
@@ -120,7 +117,6 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -134,11 +130,6 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -156,7 +147,6 @@ resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDataba
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         includedPaths: [
@@ -164,11 +154,6 @@ resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDataba
             path: '/*'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -186,15 +171,9 @@ resource modelsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/con
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'none'
         automatic: false
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -212,7 +191,6 @@ resource settingsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -243,7 +221,6 @@ resource usersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/cont
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -274,7 +251,6 @@ resource products 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -284,11 +260,6 @@ resource products 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
         excludedPaths: [
           { path: '/"_etag"/?' }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -306,7 +277,6 @@ resource brands 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -316,11 +286,6 @@ resource brands 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2
         excludedPaths: [
           { path: '/"_etag"/?' }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -338,7 +303,6 @@ resource competitors 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/contain
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -348,11 +312,6 @@ resource competitors 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/contain
         excludedPaths: [
           { path: '/"_etag"/?' }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -370,7 +329,6 @@ resource invitationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -384,11 +342,6 @@ resource invitationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -406,7 +359,6 @@ resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -420,11 +372,6 @@ resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -442,7 +389,6 @@ resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         automatic: true
         includedPaths: [
@@ -455,11 +401,6 @@ resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
@@ -477,7 +418,6 @@ resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -491,11 +431,6 @@ resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
