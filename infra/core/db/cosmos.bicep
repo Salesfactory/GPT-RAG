@@ -85,7 +85,7 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: systemManagedFailover
     publicNetworkAccess: publicNetworkAccess
-    enableAnalyticalStorage: false
+    // enableAnalyticalStorage: Omitted - cannot be disabled once enabled (immutable property, sadly)
   }
 }
 
