@@ -47,9 +47,9 @@ param databaseName string
 param databaseAutoscaleMaxThroughput int = 1000
 
 @description('Maximum autoscale throughput for the container')
-@minValue(1000)
-@maxValue(1000000)
-param autoscaleMaxThroughput int = 1000
+@minValue(500)
+@maxValue(1000)
+param autoscaleMaxThroughput int = 500
 
 @description('Time to Live for data in analytical store. (-1 no expiry)')
 @minValue(0)
@@ -139,6 +139,11 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
             path: '/"_etag"/?'
           }
         ]
+      }
+    }
+    options: {
+      autoscaleSettings: {
+        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
