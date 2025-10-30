@@ -98,7 +98,7 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: systemManagedFailover
     publicNetworkAccess: publicNetworkAccess
-    enableAnalyticalStorage: false
+    enableAnalyticalStorage: true
   }
 }
 
