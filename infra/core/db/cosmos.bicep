@@ -41,15 +41,20 @@ param systemManagedFailover bool = true
 @description('The name for the database')
 param databaseName string
 
+@description('Maximum autoscale throughput for the database (shared across all containers)')
+@minValue(1000)
+@maxValue(1000000)
+param databaseAutoscaleMaxThroughput int = 1000
+
 @description('Maximum autoscale throughput for the container')
 @minValue(1000)
 @maxValue(1000000)
 param autoscaleMaxThroughput int = 1000
 
 @description('Time to Live for data in analytical store. (-1 no expiry)')
-@minValue(-1)
+@minValue(0)
 @maxValue(2147483647)
-param analyticalStoreTTL int = -1
+param analyticalStoreTTL int = 0
 
 param secretName string = 'azureDBkey'
 
@@ -104,6 +109,11 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15
     resource: {
       id: databaseName
     }
+    options: {
+      autoscaleSettings: {
+        maxThroughput: databaseAutoscaleMaxThroughput
+      }
+    }
   }
 }
 
@@ -134,11 +144,6 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
