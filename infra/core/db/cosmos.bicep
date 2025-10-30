@@ -52,9 +52,9 @@ param databaseAutoscaleMaxThroughput int = 1000
 param autoscaleMaxThroughput int = 1000
 
 @description('Time to Live for data in analytical store. (-1 no expiry)')
-@minValue(-1)
+@minValue(0)
 @maxValue(2147483647)
-param analyticalStoreTTL int = -1
+param analyticalStoreTTL int = 0
 
 param secretName string = 'azureDBkey'
 
@@ -130,6 +130,7 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
         ]
         kind: 'Hash'
       }
+      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
