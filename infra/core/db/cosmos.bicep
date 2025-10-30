@@ -41,6 +41,11 @@ param systemManagedFailover bool = true
 @description('The name for the database')
 param databaseName string
 
+@description('Maximum autoscale throughput for the database (shared across all containers)')
+@minValue(1000)
+@maxValue(1000000)
+param databaseAutoscaleMaxThroughput int = 1000
+
 @description('Maximum autoscale throughput for the container')
 @minValue(1000)
 @maxValue(1000000)
@@ -93,7 +98,7 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: systemManagedFailover
     publicNetworkAccess: publicNetworkAccess
-    enableAnalyticalStorage: true
+    enableAnalyticalStorage: false
   }
 }
 
@@ -103,6 +108,11 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15
   properties: {
     resource: {
       id: databaseName
+    }
+    options: {
+      autoscaleSettings: {
+        maxThroughput: databaseAutoscaleMaxThroughput
+      }
     }
   }
 }
@@ -120,7 +130,6 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
         ]
         kind: 'Hash'
       }
-      analyticalStorageTtl: analyticalStoreTTL
       indexingPolicy: {
         indexingMode: 'consistent'
         automatic: true
@@ -134,11 +143,6 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
             path: '/"_etag"/?'
           }
         ]
-      }
-    }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
       }
     }
   }
