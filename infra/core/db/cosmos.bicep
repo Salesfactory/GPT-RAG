@@ -38,11 +38,6 @@ param systemManagedFailover bool = true
 @description('The name for the database')
 param databaseName string
 
-@description('Maximum autoscale throughput for the database (shared across all containers)')
-@minValue(1000)
-@maxValue(1000000)
-param databaseAutoscaleMaxThroughput int = 1000
-
 param secretName string = 'azureDBkey'
 
 param keyVaultName string
@@ -74,7 +69,7 @@ var locations = [
   }
 ]
 
-resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
+resource account 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   name: toLower(accountName)
   kind: 'GlobalDocumentDB'
   location: location
@@ -85,26 +80,26 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: systemManagedFailover
     publicNetworkAccess: publicNetworkAccess
-    // enableAnalyticalStorage: Omitted - cannot be disabled once enabled (immutable property, sadly)
+    enableAnalyticalStorage: false
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
   }
 }
 
-resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15' = {
+resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04-15' = {
   parent: account
   name: databaseName
   properties: {
     resource: {
       id: databaseName
     }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: databaseAutoscaleMaxThroughput
-      }
-    }
   }
 }
 
-resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'agentErrors'
   properties: {
@@ -135,7 +130,7 @@ resource agentErrorsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
   }
 }
 
-resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: containerName
   properties: {
@@ -159,7 +154,7 @@ resource conversationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDataba
   }
 }
 
-resource modelsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource modelsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'models'
   properties: {
@@ -179,7 +174,7 @@ resource modelsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/con
   }
 }
 
-resource settingsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource settingsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'settings'
   properties: {
@@ -209,7 +204,7 @@ resource settingsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
   }
 }
 
-resource usersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource usersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'users'
   properties: {
@@ -239,7 +234,7 @@ resource usersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/cont
   }
 }
 
-resource products 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource products 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'products'
   properties: {
@@ -265,7 +260,7 @@ resource products 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
   }
 }
 
-resource brands 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource brands 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'brands'
   properties: {
@@ -291,7 +286,7 @@ resource brands 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2
   }
 }
 
-resource competitors 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource competitors 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'competitors'
   properties: {
@@ -317,7 +312,7 @@ resource competitors 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/contain
   }
 }
 
-resource invitationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource invitationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'invitations'
   properties: {
@@ -347,7 +342,7 @@ resource invitationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabase
   }
 }
 
-resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'categories'
   properties: {
@@ -377,7 +372,7 @@ resource categoriesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases
   }
 }
 
-resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'auditLogs'
   properties: {
@@ -406,7 +401,7 @@ resource auditLogsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
   }
 }
 
-resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+resource organizationWebsitesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'organizationWebsites'
   properties: {
