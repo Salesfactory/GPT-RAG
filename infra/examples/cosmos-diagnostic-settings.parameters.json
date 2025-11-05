@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "cosmosAccountName": {
+      "value": "dbgpt0-vm2b2htvuuclm"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "law0-vm2b2htvuuclm"
+    },
+    "logAnalyticsWorkspaceResourceGroup": {
+      "value": "rg-your-environment-name"
+    },
+    "enablePartitionKeyStats": {
+      "value": true
+    },
+    "enablePartitionKeyRUConsumption": {
+      "value": true
+    },
+    "enableDataPlaneRequests": {
+      "value": false
+    },
+    "enableQueryRuntimeStats": {
+      "value": false
+    },
+    "diagnosticSettingsName": {
+      "value": "cosmos-partition-monitoring"
+    }
+  }
+}
