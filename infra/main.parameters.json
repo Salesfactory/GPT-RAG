@@ -50,6 +50,12 @@
     "azureDbDatabaseName": {
       "value": "${AZURE_DB_DATABASE_NAME}"
     },
+    "azureLogAnalyticsWorkspaceName": {
+      "value": "${AZURE_LOG_ANALYTICS_WORKSPACE_NAME}"
+    },
+    "enablePartitionKeyRUConsumption": {
+      "value": "${ENABLE_PARTITION_KEY_RU_CONSUMPTION=true}"
+    },
     "azureKeyVaultName": {
       "value": "${AZURE_KEY_VAULT_NAME}"
     },
