@@ -1,0 +1,145 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.177.2456",
+      "templateHash": "4214553530423982358"
+    }
+  },
+  "parameters": {
+    "cosmosAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Cosmos DB account"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Log Analytics workspace"
+      }
+    },
+    "logAnalyticsWorkspaceResourceGroup": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Resource group of the Log Analytics workspace"
+      }
+    },
+    "enablePartitionKeyStats": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable PartitionKeyStatistics logs for tracking storage usage per partition"
+      }
+    },
+    "enablePartitionKeyRUConsumption": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable PartitionKeyRUConsumption logs for tracking RU consumption per partition (critical for multi-tenant billing)"
+      }
+    },
+    "enableDataPlaneRequests": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable DataPlaneRequests logs for detailed request tracking"
+      }
+    },
+    "enableQueryRuntimeStats": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable QueryRuntimeStatistics logs for query performance analysis"
+      }
+    },
+    "diagnosticSettingsName": {
+      "type": "string",
+      "defaultValue": "cosmos-partition-monitoring",
+      "metadata": {
+        "description": "Name for the diagnostic settings resource"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosAccountName'))]",
+      "name": "[parameters('diagnosticSettingsName')]",
+      "properties": {
+        "workspaceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('logAnalyticsWorkspaceResourceGroup')), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+        "logs": [
+          {
+            "category": "PartitionKeyStatistics",
+            "enabled": "[parameters('enablePartitionKeyStats')]",
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          },
+          {
+            "category": "PartitionKeyRUConsumption",
+            "enabled": "[parameters('enablePartitionKeyRUConsumption')]",
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          },
+          {
+            "category": "DataPlaneRequests",
+            "enabled": "[parameters('enableDataPlaneRequests')]",
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          },
+          {
+            "category": "QueryRuntimeStatistics",
+            "enabled": "[parameters('enableQueryRuntimeStats')]",
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "category": "Requests",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "diagnosticSettingsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the diagnostic settings resource"
+      },
+      "value": "[parameters('diagnosticSettingsName')]"
+    },
+    "workspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the Log Analytics workspace"
+      },
+      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('logAnalyticsWorkspaceResourceGroup')), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+    },
+    "cosmosAccountId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the Cosmos DB account"
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosAccountName'))]"
+    }
+  }
+}

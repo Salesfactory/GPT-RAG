@@ -396,6 +396,11 @@ var dbAccountName = !empty(azureDbAccountName) ? azureDbAccountName : 'dbgpt0-${
 @description('Cosmos DB Database Name. Use your own name convention or leave as it is to generate a random name.')
 param azureDbDatabaseName string = ''
 var dbDatabaseName = !empty(azureDbDatabaseName) ? azureDbDatabaseName : 'db0-${resourceToken}'
+@description('Log Analytics Workspace Name. Use your own name convention or leave as it is to generate a random name.')
+param azureLogAnalyticsWorkspaceName string = ''
+var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName) ? azureLogAnalyticsWorkspaceName : 'law0-${resourceToken}'
+@description('Enable PartitionKeyRUConsumption logs for multi-tenant billing')
+param enablePartitionKeyRUConsumption bool = true
 @description('Key Vault Name. Use your own name convention or leave as it is to generate a random name.')
 param azureKeyVaultName string = ''
 var keyVaultName = !empty(azureKeyVaultName) ? azureKeyVaultName : 'kv0-${resourceToken}'
@@ -838,6 +843,33 @@ module cosmospe './core/network/private-endpoint.bicep' = if (networkIsolation) 
     serviceId: cosmosAccount.outputs.id
     groupIds: ['Sql']
     dnsZoneId: networkIsolation ? documentsDnsZone.outputs.id : ''
+  }
+}
+
+// Log Analytics Workspace for monitoring
+module logAnalytics './core/monitor/log-analytics.bicep' = {
+  name: 'loganalytics'
+  scope: resourceGroup
+  params: {
+    name: logAnalyticsWorkspaceName
+    location: location
+    tags: tags
+    retentionInDays: 30
+  }
+}
+
+// Cosmos DB Diagnostic Settings for multi-tenant billing
+module cosmosdiagnostics './core/monitor/cosmos-diagnostic-settings.bicep' = {
+  name: 'cosmosdiagnostics'
+  scope: resourceGroup
+  params: {
+    cosmosAccountName: cosmosAccount.outputs.name
+    logAnalyticsWorkspaceName: logAnalytics.outputs.name
+    logAnalyticsWorkspaceResourceGroup: resourceGroup.name
+    enablePartitionKeyStats: true
+    enablePartitionKeyRUConsumption: enablePartitionKeyRUConsumption
+    enableDataPlaneRequests: false
+    enableQueryRuntimeStats: false
   }
 }
 
