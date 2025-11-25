@@ -1931,10 +1931,6 @@ module mcpServer './core/host/functions.bicep' = {
         value: pythonEnableInitIndexing
       }
       {
-        name: 'SEARCH_API_KEY'
-        value: aiSearchApiKey
-      }
-      {
         name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
       }
