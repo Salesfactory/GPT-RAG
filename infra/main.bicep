@@ -555,6 +555,14 @@ var mcpCodeInterpreterAgentModelVar = !empty(mcpCodeInterpreterAgentModel) ? mcp
 @description('endpoint service for the agent model')
 var mcpAgentEndpointService = 'r1ai0-${resourceToken}-aiservice'
 
+@description('Azure Search Index for MCP function app')
+param mcpAzureSearchIndex string = ''
+var mcpAzureSearchIndexVar = !empty(mcpAzureSearchIndex) ? mcpAzureSearchIndex : ''
+
+@description('User data container for MCP function app')
+param mcpUserDataContainer string = ''
+var mcpUserDataContainerVar = !empty(mcpUserDataContainer) ? mcpUserDataContainer : ''
+
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
 // ---------------------------------------------------------------------
@@ -619,8 +627,6 @@ param reasoningEffortReport string = ''
 var reasoningEffortReportVar = !empty(reasoningEffortReport) ? reasoningEffortReport : ''
 
 // MCP Function app
-@description('MCP Search Index')
-var mcpSearchIndex = 'ragindex-test'
 @description('Logging Verbosity')
 var loggingVerbosity = 'false'
 
@@ -962,33 +968,11 @@ module orchestrator './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_AI_SEARCH_INDEX_NAME'
-        value: searchIndex
-      }
-      {
-        name: 'AZURE_AI_SEARCH_SERVICE_NAME'
-        value: searchServiceName
-      }
-      {
-        name: 'AZURE_OPENAI_API_KEY'
-        value: openAiApiKey
+        value: mcpAzureSearchIndexVar
       }
       {
         name: 'AZURE_OPENAI_API_VERSION'
         value: openaiApiVersion
-      }
-      {
-        name: 'AZURE_OPENAI_CHAT_DEPLOYMENT_NAME'
-        value: chatGptDeploymentName
-      }
-      {
-        name: 'AZURE_OPENAI_ENDPOINT'
-        value: openAiEndpoint
-      }
-      {
-        name: 'AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG'
-      }
-      {
-        name: 'AZURE_SEARCH_TOP_K'
       }
       {
         name: 'AZURE_STORAGE_ACCOUNT_URL'
@@ -1002,19 +986,6 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
-      }
-      {
-        name: 'SERPER_API_KEY'
-        value: orchestratorSerperApiKeyVar
-      }
-      {
-        name: 'BING_SEARCH_API_KEY'
-      }
-      {
-        name: 'BING_SEARCH_URL'
-      }
-      {
-        name: 'BING_SUBSCRIPTION_KEY'
       }
       {
         name: 'LANGCHAIN_API_KEY'
@@ -1057,56 +1028,8 @@ module orchestrator './core/host/functions.bicep' = {
         value: searchServiceName
       }
       {
-        name: 'AZURE_SEARCH_INDEX'
-        value: searchIndex
-      }
-      {
-        name: 'AZURE_FINANCIAL_SEARCH_INDEXER_NAME'
-        value: financialSearchIndexerName
-      }
-      {
-        name: 'AZURE_SEARCH_APPROACH'
-        value: retrievalApproach
-      }
-      {
-        name: 'AZURE_SEARCH_USE_SEMANTIC'
-        value: useSemanticReranking
-      }
-      {
         name: 'AZURE_SEARCH_API_VERSION'
         value: searchApiVersion
-      }
-      {
-        name: 'AZURE_OPENAI_RESOURCE'
-        value: openAiServiceName
-      }
-      {
-        name: 'AZURE_OPENAI_CHATGPT_DEPLOYMENT'
-        value: chatGptDeploymentName
-      }
-      {
-        name: 'AZURE_OPENAI_CHATGPT_LLM_MONITORING'
-        value: chatGptLlmMonitoring
-      }
-      {
-        name: 'AZURE_OPENAI_LOAD_BALANCING'
-        value: false
-      }
-      {
-        name: 'AZURE_OPENAI_EMBEDDING_MODEL'
-        value: embeddingsModelName
-      }
-      {
-        name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT'
-        value: embeddingsDeploymentName
-      }
-      {
-        name: 'AZURE_OPENAI_STREAM'
-        value: false
-      }
-      {
-        name: 'ORCHESTRATOR_MESSAGES_LANGUAGE'
-        value: orchestratorMessagesLanguage
       }
       {
         name: 'ENABLE_ORYX_BUILD'
@@ -1123,14 +1046,6 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'WEB_APP_URL'
         value: webAppUri
-      }
-      {
-        name: 'AZURE_INFERENCE_SDK_ENDPOINT'
-        value: gptDeployment.outputs.r1Endpoint
-      }
-      {
-        name: 'AZURE_INFERENCE_SDK_KEY'
-        value: gptDeployment.outputs.r1Key
       }
       {
         name: 'AZURE_STORAGE_CONNECTION_STRING'
@@ -1980,7 +1895,11 @@ module mcpServer './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_SEARCH_INDEX'
-        value: mcpSearchIndex
+        value: mcpAzureSearchIndexVar
+      }
+      {
+        name: 'USER_DATA_CONTAINER'
+        value: mcpUserDataContainerVar
       }
       {
         name: 'AZURE_OPENAI_ENDPOINT'
