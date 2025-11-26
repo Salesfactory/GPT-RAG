@@ -481,11 +481,6 @@ resource organizationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDataba
         ]
       }
     }
-    options: {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    }
   }
 }
 
