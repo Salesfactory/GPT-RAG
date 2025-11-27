@@ -456,6 +456,30 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   }
 }
 
+resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'organizationsUsage'
+  properties: {
+    resource: {
+      id: 'organizationsUsage'
+      partitionKey: {
+        paths: ['/organization_id']
+        kind: 'Hash'
+      }
+      uniqueKeyPolicy: {
+        uniqueKeys: [
+          {
+            paths: [
+              '/organization_id'
+            ]
+          }
+        ]
+      }
+    }
+    options: {}
+  }
+}
+
 resource organizationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'organizations'
