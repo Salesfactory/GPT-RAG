@@ -486,6 +486,10 @@ resource subscriptionsTiers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
   properties: {
     resource: {
       id: 'subscriptionsTiers'
+      partitionKey: {
+        paths: ['/tier_name']
+        kind: 'Hash'
+      }
       uniqueKeyPolicy: {
         uniqueKeys: [
           {
