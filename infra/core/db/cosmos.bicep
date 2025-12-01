@@ -480,6 +480,26 @@ resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
   }
 }
 
+resource subscriptionsTiers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'subscriptionsTiers'
+  properties: {
+    resource: {
+      id: 'subscriptionsTiers'
+      uniqueKeyPolicy: {
+        uniqueKeys: [
+          {
+            paths: [
+              '/tier_name'
+            ]
+          }
+        ]
+      }
+    }
+    options: {}
+  }
+}
+
 resource organizationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'organizations'
