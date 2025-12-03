@@ -490,12 +490,17 @@ resource subscriptionsTiers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
         paths: ['/id']
         kind: 'Hash'
       }
-      uniqueKeyPolicy: {
-        uniqueKeys: [
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        automatic: true
+        includedPaths: [
           {
-            paths: [
-              '/id'
-            ]
+            path: '/*'
+          }
+        ]
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
           }
         ]
       }
