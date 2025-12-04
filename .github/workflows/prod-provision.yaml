@@ -91,6 +91,7 @@ jobs:
 
           # MCP
           AGENT_MODEL: ${{ secrets.AGENT_MODEL }}
+          CODE_EXECUTION_MODEL: ${{ secrets.CODE_EXECUTION_MODEL }}
           AZURE_SEARCH_INDEX: ${{ secrets.AZURE_SEARCH_INDEX }}
           USER_DATA_CONTAINER: ${{ secrets.USER_DATA_CONTAINER }}
 
