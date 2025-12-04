@@ -547,10 +547,14 @@ var aiSearchApiKey = !empty(azureAiSearchApiKey) ? azureAiSearchApiKey : ''
 param azureOpenAiApiKey string = ''
 var openAiApiKey = !empty(azureOpenAiApiKey) ? azureOpenAiApiKey : ''
 
-// MCP 
+// MCP
 @description('MCP code interpreter agent model')
 param mcpCodeInterpreterAgentModel string = ''
 var mcpCodeInterpreterAgentModelVar = !empty(mcpCodeInterpreterAgentModel) ? mcpCodeInterpreterAgentModel : ''
+
+@description('MCP code execution model')
+param mcpCodeExecutionModel string = ''
+var mcpCodeExecutionModelVar = !empty(mcpCodeExecutionModel) ? mcpCodeExecutionModel : ''
 
 @description('endpoint service for the agent model')
 var mcpAgentEndpointService = 'r1ai0-${resourceToken}-aiservice'
@@ -1912,6 +1916,10 @@ module mcpServer './core/host/functions.bicep' = {
       {
         name: 'AGENT_MODEL'
         value: mcpCodeInterpreterAgentModelVar
+      }
+      {
+        name: 'CODE_EXECUTION_MODEL'
+        value: mcpCodeExecutionModelVar
       }
       {
         name: 'AGENT_ENDPOINT_SERVICE'

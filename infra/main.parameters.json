@@ -185,6 +185,9 @@
     "mcpCodeInterpreterAgentModel": {
       "value": "${AGENT_MODEL}"
     },
+    "mcpCodeExecutionModel": {
+      "value": "${CODE_EXECUTION_MODEL}"
+    },
     "deploymentTags": {
       "value": {}
     },
