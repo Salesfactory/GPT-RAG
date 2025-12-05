@@ -396,6 +396,11 @@ var dbAccountName = !empty(azureDbAccountName) ? azureDbAccountName : 'dbgpt0-${
 @description('Cosmos DB Database Name. Use your own name convention or leave as it is to generate a random name.')
 param azureDbDatabaseName string = ''
 var dbDatabaseName = !empty(azureDbDatabaseName) ? azureDbDatabaseName : 'db0-${resourceToken}'
+@description('Log Analytics Workspace Name. Use your own name convention or leave as it is to generate a random name.')
+param azureLogAnalyticsWorkspaceName string = ''
+var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName) ? azureLogAnalyticsWorkspaceName : 'law0-${resourceToken}'
+@description('Enable PartitionKeyRUConsumption logs for multi-tenant billing')
+param enablePartitionKeyRUConsumption bool = true
 @description('Key Vault Name. Use your own name convention or leave as it is to generate a random name.')
 param azureKeyVaultName string = ''
 var keyVaultName = !empty(azureKeyVaultName) ? azureKeyVaultName : 'kv0-${resourceToken}'
@@ -542,13 +547,25 @@ var aiSearchApiKey = !empty(azureAiSearchApiKey) ? azureAiSearchApiKey : ''
 param azureOpenAiApiKey string = ''
 var openAiApiKey = !empty(azureOpenAiApiKey) ? azureOpenAiApiKey : ''
 
-// MCP 
+// MCP
 @description('MCP code interpreter agent model')
 param mcpCodeInterpreterAgentModel string = ''
 var mcpCodeInterpreterAgentModelVar = !empty(mcpCodeInterpreterAgentModel) ? mcpCodeInterpreterAgentModel : ''
 
+@description('MCP code execution model')
+param mcpCodeExecutionModel string = ''
+var mcpCodeExecutionModelVar = !empty(mcpCodeExecutionModel) ? mcpCodeExecutionModel : ''
+
 @description('endpoint service for the agent model')
 var mcpAgentEndpointService = 'r1ai0-${resourceToken}-aiservice'
+
+@description('Azure Search Index for MCP function app')
+param mcpAzureSearchIndex string = ''
+var mcpAzureSearchIndexVar = !empty(mcpAzureSearchIndex) ? mcpAzureSearchIndex : ''
+
+@description('User data container for MCP function app')
+param mcpUserDataContainer string = ''
+var mcpUserDataContainerVar = !empty(mcpUserDataContainer) ? mcpUserDataContainer : ''
 
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
@@ -614,8 +631,6 @@ param reasoningEffortReport string = ''
 var reasoningEffortReportVar = !empty(reasoningEffortReport) ? reasoningEffortReport : ''
 
 // MCP Function app
-@description('MCP Search Index')
-var mcpSearchIndex = 'ragindex-test'
 @description('Logging Verbosity')
 var loggingVerbosity = 'false'
 
@@ -841,6 +856,33 @@ module cosmospe './core/network/private-endpoint.bicep' = if (networkIsolation) 
   }
 }
 
+// Log Analytics Workspace for monitoring
+module logAnalytics './core/monitor/log-analytics.bicep' = {
+  name: 'loganalytics'
+  scope: resourceGroup
+  params: {
+    name: logAnalyticsWorkspaceName
+    location: location
+    tags: tags
+    retentionInDays: 30
+  }
+}
+
+// Cosmos DB Diagnostic Settings for multi-tenant billing
+module cosmosdiagnostics './core/monitor/cosmos-diagnostic-settings.bicep' = {
+  name: 'cosmosdiagnostics'
+  scope: resourceGroup
+  params: {
+    cosmosAccountName: cosmosAccount.outputs.name
+    logAnalyticsWorkspaceName: logAnalytics.outputs.name
+    logAnalyticsWorkspaceResourceGroup: resourceGroup.name
+    enablePartitionKeyStats: true
+    enablePartitionKeyRUConsumption: enablePartitionKeyRUConsumption
+    enableDataPlaneRequests: false
+    enableQueryRuntimeStats: false
+  }
+}
+
 // Store secrets in a keyvault
 module keyVault './core/security/keyvault.bicep' = {
   name: 'keyvault'
@@ -930,33 +972,11 @@ module orchestrator './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_AI_SEARCH_INDEX_NAME'
-        value: searchIndex
-      }
-      {
-        name: 'AZURE_AI_SEARCH_SERVICE_NAME'
-        value: searchServiceName
-      }
-      {
-        name: 'AZURE_OPENAI_API_KEY'
-        value: openAiApiKey
+        value: mcpAzureSearchIndexVar
       }
       {
         name: 'AZURE_OPENAI_API_VERSION'
         value: openaiApiVersion
-      }
-      {
-        name: 'AZURE_OPENAI_CHAT_DEPLOYMENT_NAME'
-        value: chatGptDeploymentName
-      }
-      {
-        name: 'AZURE_OPENAI_ENDPOINT'
-        value: openAiEndpoint
-      }
-      {
-        name: 'AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG'
-      }
-      {
-        name: 'AZURE_SEARCH_TOP_K'
       }
       {
         name: 'AZURE_STORAGE_ACCOUNT_URL'
@@ -970,19 +990,6 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
-      }
-      {
-        name: 'SERPER_API_KEY'
-        value: orchestratorSerperApiKeyVar
-      }
-      {
-        name: 'BING_SEARCH_API_KEY'
-      }
-      {
-        name: 'BING_SEARCH_URL'
-      }
-      {
-        name: 'BING_SUBSCRIPTION_KEY'
       }
       {
         name: 'LANGCHAIN_API_KEY'
@@ -1025,56 +1032,8 @@ module orchestrator './core/host/functions.bicep' = {
         value: searchServiceName
       }
       {
-        name: 'AZURE_SEARCH_INDEX'
-        value: searchIndex
-      }
-      {
-        name: 'AZURE_FINANCIAL_SEARCH_INDEXER_NAME'
-        value: financialSearchIndexerName
-      }
-      {
-        name: 'AZURE_SEARCH_APPROACH'
-        value: retrievalApproach
-      }
-      {
-        name: 'AZURE_SEARCH_USE_SEMANTIC'
-        value: useSemanticReranking
-      }
-      {
         name: 'AZURE_SEARCH_API_VERSION'
         value: searchApiVersion
-      }
-      {
-        name: 'AZURE_OPENAI_RESOURCE'
-        value: openAiServiceName
-      }
-      {
-        name: 'AZURE_OPENAI_CHATGPT_DEPLOYMENT'
-        value: chatGptDeploymentName
-      }
-      {
-        name: 'AZURE_OPENAI_CHATGPT_LLM_MONITORING'
-        value: chatGptLlmMonitoring
-      }
-      {
-        name: 'AZURE_OPENAI_LOAD_BALANCING'
-        value: false
-      }
-      {
-        name: 'AZURE_OPENAI_EMBEDDING_MODEL'
-        value: embeddingsModelName
-      }
-      {
-        name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT'
-        value: embeddingsDeploymentName
-      }
-      {
-        name: 'AZURE_OPENAI_STREAM'
-        value: false
-      }
-      {
-        name: 'ORCHESTRATOR_MESSAGES_LANGUAGE'
-        value: orchestratorMessagesLanguage
       }
       {
         name: 'ENABLE_ORYX_BUILD'
@@ -1091,14 +1050,6 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'WEB_APP_URL'
         value: webAppUri
-      }
-      {
-        name: 'AZURE_INFERENCE_SDK_ENDPOINT'
-        value: gptDeployment.outputs.r1Endpoint
-      }
-      {
-        name: 'AZURE_INFERENCE_SDK_KEY'
-        value: gptDeployment.outputs.r1Key
       }
       {
         name: 'AZURE_STORAGE_CONNECTION_STRING'
@@ -1931,10 +1882,6 @@ module mcpServer './core/host/functions.bicep' = {
         value: pythonEnableInitIndexing
       }
       {
-        name: 'SEARCH_API_KEY'
-        value: aiSearchApiKey
-      }
-      {
         name: 'AZURE_SEARCH_SERVICE'
         value: searchServiceName
       }
@@ -1952,7 +1899,11 @@ module mcpServer './core/host/functions.bicep' = {
       }
       {
         name: 'AZURE_SEARCH_INDEX'
-        value: mcpSearchIndex
+        value: mcpAzureSearchIndexVar
+      }
+      {
+        name: 'USER_DATA_CONTAINER'
+        value: mcpUserDataContainerVar
       }
       {
         name: 'AZURE_OPENAI_ENDPOINT'
@@ -1965,6 +1916,10 @@ module mcpServer './core/host/functions.bicep' = {
       {
         name: 'AGENT_MODEL'
         value: mcpCodeInterpreterAgentModelVar
+      }
+      {
+        name: 'CODE_EXECUTION_MODEL'
+        value: mcpCodeExecutionModelVar
       }
       {
         name: 'AGENT_ENDPOINT_SERVICE'

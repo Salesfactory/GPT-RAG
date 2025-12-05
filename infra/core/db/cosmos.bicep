@@ -456,6 +456,87 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   }
 }
 
+resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'organizationsUsage'
+  properties: {
+    resource: {
+      id: 'organizationsUsage'
+      partitionKey: {
+        paths: ['/organization_id']
+        kind: 'Hash'
+      }
+      uniqueKeyPolicy: {
+        uniqueKeys: [
+          {
+            paths: [
+              '/organization_id'
+            ]
+          }
+        ]
+      }
+    }
+    options: {}
+  }
+}
+
+resource subscriptionsTiers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'subscriptionsTiers'
+  properties: {
+    resource: {
+      id: 'subscriptionsTiers'
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        automatic: true
+        includedPaths: [
+          {
+            path: '/*'
+          }
+        ]
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
+          }
+        ]
+      }
+    }
+    options: {}
+  }
+}
+
+resource organizationsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'organizations'
+  properties: {
+    resource: {
+      id: 'organizations'
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        automatic: true
+        includedPaths: [
+          {
+            path: '/*'
+          }
+        ]
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
+          }
+        ]
+      }
+    }
+  }
+}
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
