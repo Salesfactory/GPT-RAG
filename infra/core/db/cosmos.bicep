@@ -463,14 +463,14 @@ resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
     resource: {
       id: 'organizationsUsage'
       partitionKey: {
-        paths: ['/organization_id']
+        paths: ['/organizationId']
         kind: 'Hash'
       }
       uniqueKeyPolicy: {
         uniqueKeys: [
           {
             paths: [
-              '/organization_id'
+              '/organizationId'
             ]
           }
         ]
