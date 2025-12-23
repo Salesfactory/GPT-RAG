@@ -68,6 +68,9 @@
     "azureAppServicePlanName": {
       "value": "${AZURE_APP_SERVICE_PLAN_NAME}"
     },
+    "azureAppServicePlanSku": {
+      "value": "${AZURE_APP_SERVICE_PLAN_SKU}"
+    },
     "azureAppInsightsName": {
       "value": "${AZURE_APP_INSIGHTS_NAME}"
     },

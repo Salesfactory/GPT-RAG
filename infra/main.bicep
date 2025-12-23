@@ -413,6 +413,8 @@ var cognitiveServiceName = !empty(azureCognitiveServiceName) ? azureCognitiveSer
 @description('App Service Plan Name. Use your own name convention or leave as it is to generate a random name.')
 param azureAppServicePlanName string = ''
 var appServicePlanName = !empty(azureAppServicePlanName) ? azureAppServicePlanName : 'appplan0-${resourceToken}'
+@description('App Service Plan SKU name')
+param azureAppServicePlanSku string = ''
 @description('App Insights Name. Use your own name convention or leave as it is to generate a random name.')
 param azureAppInsightsName string = ''
 var appInsightsName = !empty(azureAppInsightsName) ? azureAppInsightsName : 'appins0-${resourceToken}'
@@ -922,7 +924,7 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
     location: location
     tags: tags
     sku: {
-      name: 'P0v3'
+      name: azureAppServicePlanSku
       capacity: 1
     }
     kind: 'linux'

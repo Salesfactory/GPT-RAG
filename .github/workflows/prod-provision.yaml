@@ -42,6 +42,7 @@ jobs:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           GPT41_CAPACITY: ${{ secrets.GPT41_CAPACITY }}
           O4_MINI_CAPACITY: ${{ secrets.O4_MINI_CAPACITY }}
+          AZURE_APP_SERVICE_PLAN_SKU: ${{ secrets.WEB_APP_PLAN }}
 
           # Required Password Parameters
           AZURE_VM_USER_INITIAL_PASSWORD: ${{ secrets.VM_USER_INITIAL_PASSWORD }}
