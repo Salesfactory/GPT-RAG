@@ -1866,6 +1866,7 @@ module mcpServer './core/host/functions.bicep' = {
     vnetName: vnet.outputs.name
     networkIsolation: networkIsolation
     storageAccountName: '${storageAccountName}mcp'
+    appCommandLine: 'apt-get update && apt-get install -y weasyprint libreoffice'
     appName: mcpServerFunctionAppName
     location: location
     appInsightsConnectionString: appInsights.outputs.connectionString
