@@ -487,20 +487,26 @@ resource userLogscontainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
     resource: {
       id: 'userLogs'
       partitionKey: {
-        paths: ['/organizationId']
+        paths: [
+          '/organizationId'
+        ]
         kind: 'Hash'
       }
-      uniqueKeyPolicy: {
-        uniqueKeys: [
+      indexingPolicy: {
+        indexingMode: 'consistent'
+        automatic: true
+        includedPaths: [
           {
-            paths: [
-              '/organizationId'
-            ]
+            path: '/*'
+          }
+        ]
+        excludedPaths: [
+          {
+            path: '/"_etag"/?'
           }
         ]
       }
     }
-    options: {}
   }
 }
 
