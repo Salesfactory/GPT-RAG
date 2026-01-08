@@ -480,6 +480,30 @@ resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
   }
 }
 
+resource userLogscontainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'userLogs'
+  properties: {
+    resource: {
+      id: 'userLogs'
+      partitionKey: {
+        paths: ['/organizationId']
+        kind: 'Hash'
+      }
+      uniqueKeyPolicy: {
+        uniqueKeys: [
+          {
+            paths: [
+              '/organizationId'
+            ]
+          }
+        ]
+      }
+    }
+    options: {}
+  }
+}
+
 resource subscriptionsTiers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'subscriptionsTiers'
