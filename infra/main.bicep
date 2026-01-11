@@ -1984,20 +1984,19 @@ module mcpEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
 }
 
 // Event Grid Subscription for Data Ingestion Function (JSON files)
-// DISABLED: Deploy functions first, then uncomment and run `azd provision` again
-// module ingestEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
-//   name: 'ingest-json-event-subscription'
-//   scope: resourceGroup
-//   params: {
-//     name: 'ingest-json-subscription-${resourceToken}'
-//     systemTopicName: storageEventGrid.outputs.name
-//     functionAppId: dataIngestion.outputs.id
-//     functionName: 'EventGridTrigger'
-//     eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
-//     subjectBeginsWith: '/blobServices/default/containers/survey-json-intermediate/blobs/'
-//     fileExtensions: ['.json']
-//   }
-// }
+module ingestEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+  name: 'ingest-json-event-subscription'
+  scope: resourceGroup
+  params: {
+    name: 'ingest-json-subscription-${resourceToken}'
+    systemTopicName: storageEventGrid.outputs.name
+    functionAppId: dataIngestion.outputs.id
+    functionName: 'EventGridTrigger'
+    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+    subjectBeginsWith: '/blobServices/default/containers/survey-json-intermediate/blobs/'
+    fileExtensions: ['.json']
+  }
+}
 
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_ZERO_TRUST string = networkIsolation ? 'TRUE' : 'FALSE'
