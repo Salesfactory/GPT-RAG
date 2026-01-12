@@ -3540,7 +3540,7 @@ resource storageAccounts_strag0vm2b2htvuuclm_name_default_survey_json_intermedia
 
 resource storageAccounts_strag0vm2b2htvuuclm_name_default_survey_markdown_intermediate 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-05-01' = {
   parent: storageAccounts_strag0vm2b2htvuuclm_name_default
-  name: 'survey-markdown-intermediate'
+  name: 'survey-markdown'
   properties: {
     defaultEncryptionScope: '$account-encryption-key'
     denyEncryptionScopeOverride: false
