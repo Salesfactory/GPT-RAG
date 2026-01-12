@@ -392,7 +392,7 @@ param storageTestImagesContainerName string = 'ragindex-test-images'
 param storageSurveyJsonContainerName string = 'survey-json-intermediate'
 
 @description('Name of the container where survey markdown will be stored.')
-param storageSurveyMarkdownContainerName string = 'survey-markdown-intermediate'
+param storageSurveyMarkdownContainerName string = 'survey-markdown'
 
 // Service names
 // The name for each service can be set from environment variables which are mapped in main.parameters.json.
