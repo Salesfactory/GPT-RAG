@@ -1998,6 +1998,21 @@ module ingestEventSubscription './core/eventgrid/eventgrid-subscription.bicep' =
   }
 }
 
+// Event Grid Subscription for Orchestrator Function (document container)
+module orchestratorEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+  name: 'documents-event-subscription'
+  scope: resourceGroup
+  params: {
+    name: 'documents-event-subscription-${resourceToken}'
+    systemTopicName: storageEventGrid.outputs.name
+    functionAppId: orchestrator.outputs.id
+    functionName: 'EventGridTrigger'
+    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+    subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/'
+    fileExtensions: ['.pdf', '.docx', '.doc', '.txt', '.md', '.html', '.pptx']
+  }
+}
+
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_ZERO_TRUST string = networkIsolation ? 'TRUE' : 'FALSE'
 output AZURE_VM_NAME string = networkIsolation ? ztVmName : ''
