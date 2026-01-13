@@ -972,6 +972,7 @@ module orchestrator './core/host/functions.bicep' = {
     numberOfWorkers: 2
     minimumElasticInstanceCount: 1
     allowedOrigins: ['*']
+    healthCheckPath: '/api/health'
     appSettings: [
       {
         name: 'PYTHON_ENABLE_INIT_INDEXING'
