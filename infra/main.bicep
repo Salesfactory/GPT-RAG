@@ -1985,20 +1985,6 @@ module storageEventGrid './core/eventgrid/eventgrid-system-topic.bicep' = {
 }
 
 // Event Grid Subscription for MCP Function
-module mcpEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
-  name: 'org-files-event-subscription'
-  scope: resourceGroup
-  params: {
-    name: 'org-files-event-subscription-${resourceToken}'
-    systemTopicName: storageEventGrid.outputs.name
-    functionAppId: mcpServer.outputs.id
-    functionName: 'EventGridTrigger'
-    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
-    subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/organization_files/'
-    fileExtensions: ['.xlsx', '.xls', '.csv']
-  }
-}
-
 // Event Grid Subscription for Data Ingestion Function (JSON files)
 // module ingestEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
 //   name: 'ingest-json-event-subscription'
