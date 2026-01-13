@@ -1561,6 +1561,7 @@ module dataIngestion './core/host/functions.bicep' = {
     allowedOrigins: ['*']
     functionAppScaleLimit: 1
     minimumElasticInstanceCount: 1
+    healthCheckPath: '/api/health'
     numberOfWorkers: 1
     appSettings: [
       {
@@ -1891,6 +1892,7 @@ module mcpServer './core/host/functions.bicep' = {
     allowedOrigins: ['*']
     functionAppScaleLimit: 2
     minimumElasticInstanceCount: 1
+    healthCheckPath: '/api/health'
     numberOfWorkers: 2
     appSettings: [
       {
