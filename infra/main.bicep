@@ -1630,6 +1630,10 @@ module dataIngestion './core/host/functions.bicep' = {
         name:'COGNITIVE_SERVICES_KEY'
         value: cognitiveServices.outputs.key
       }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKeyVar
+      }
     ]
   }
 }
