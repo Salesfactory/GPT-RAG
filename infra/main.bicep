@@ -2030,19 +2030,19 @@ module orchestratorEventSubscription './core/eventgrid/eventgrid-subscription.bi
 }
 
 // Event Grid Subscription for Pulse Markdown (Markdown files)
-module pulseIndexerEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
-  name: 'markdown-indexer-event-subscription'
-  scope: resourceGroup
-  params: {
-    name: 'markdown-indexer-subscription-${resourceToken}'
-    systemTopicName: storageEventGrid.outputs.name
-    functionAppId: dataIngestion.outputs.id
-    functionName: 'EventGridTriggerSurveyMarkdownIndexer'
-    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
-    subjectBeginsWith: '/blobServices/default/containers/survey-markdown/blobs/'
-    fileExtensions: ['.md', '.txt']
-  }
-}
+// module pulseIndexerEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+//   name: 'markdown-indexer-event-subscription'
+//   scope: resourceGroup
+//   params: {
+//     name: 'markdown-indexer-subscription-${resourceToken}'
+//     systemTopicName: storageEventGrid.outputs.name
+//     functionAppId: dataIngestion.outputs.id
+//     functionName: 'EventGridTriggerSurveyMarkdownIndexer'
+//     eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+//     subjectBeginsWith: '/blobServices/default/containers/survey-markdown/blobs/'
+//     fileExtensions: ['.md', '.txt']
+//   }
+// }
 
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_ZERO_TRUST string = networkIsolation ? 'TRUE' : 'FALSE'
