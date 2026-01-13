@@ -3522,6 +3522,38 @@ resource storageAccounts_strag0vm2b2htvuuclm_name_default_documents 'Microsoft.S
   ]
 }
 
+resource storageAccounts_strag0vm2b2htvuuclm_name_default_survey_json_intermediate 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-05-01' = {
+  parent: storageAccounts_strag0vm2b2htvuuclm_name_default
+  name: 'survey-json-intermediate'
+  properties: {
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_strag0vm2b2htvuuclm_name_resource
+  ]
+}
+
+resource storageAccounts_strag0vm2b2htvuuclm_name_default_survey_markdown_intermediate 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-05-01' = {
+  parent: storageAccounts_strag0vm2b2htvuuclm_name_default
+  name: 'survey-markdown'
+  properties: {
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_strag0vm2b2htvuuclm_name_resource
+  ]
+}
+
 resource storageAccounts_strag0vm2b2htvuuclm_name_default_ms_az_cognitive_search_debugsession 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-05-01' = {
   parent: storageAccounts_strag0vm2b2htvuuclm_name_default
   name: 'ms-az-cognitive-search-debugsession'

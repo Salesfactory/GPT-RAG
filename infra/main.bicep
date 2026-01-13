@@ -387,6 +387,13 @@ param storageFinancialAgentContainerName string = 'fa-documents'
 param storageUserDocumentsContainerName string = 'user-documents'
 @description(' Name of the container where test images will be stored.')
 param storageTestImagesContainerName string = 'ragindex-test-images'
+
+@description('Name of the container where survey json will be stored.')
+param storageSurveyJsonContainerName string = 'survey-json-intermediate'
+
+@description('Name of the container where survey markdown will be stored.')
+param storageSurveyMarkdownContainerName string = 'survey-markdown'
+
 // Service names
 // The name for each service can be set from environment variables which are mapped in main.parameters.json.
 // Then no maping to specific name is defined, a unique name is generated for each service based on the resourceToken created above.
@@ -784,6 +791,8 @@ module storage './core/storage/storage-account.bicep' = {
       { name: storageUserDocumentsContainerName, publicAccess: 'None' }
       { name: storageFinancialAgentContainerName, publicAccess: 'None' }
       { name: storageTestImagesContainerName, publicAccess: 'None' }
+      { name: storageSurveyJsonContainerName, publicAccess: 'None' }
+      { name: storageSurveyMarkdownContainerName, publicAccess: 'None' }
     ]
     keyVaultName: keyVault.outputs.name
     secretName: 'storageConnectionString'
@@ -1621,6 +1630,10 @@ module dataIngestion './core/host/functions.bicep' = {
         name:'COGNITIVE_SERVICES_KEY'
         value: cognitiveServices.outputs.key
       }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKeyVar
+      }
     ]
   }
 }
@@ -1980,6 +1993,36 @@ module mcpEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
     eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
     subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/organization_files/'
     fileExtensions: ['.xlsx', '.xls', '.csv']
+  }
+}
+
+// Event Grid Subscription for Data Ingestion Function (JSON files)
+module ingestEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+  name: 'ingest-json-event-subscription'
+  scope: resourceGroup
+  params: {
+    name: 'ingest-json-subscription-${resourceToken}'
+    systemTopicName: storageEventGrid.outputs.name
+    functionAppId: dataIngestion.outputs.id
+    functionName: 'EventGridTrigger'
+    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+    subjectBeginsWith: '/blobServices/default/containers/survey-json-intermediate/blobs/'
+    fileExtensions: ['.json']
+  }
+}
+
+// Event Grid Subscription for Orchestrator Function (document container)
+module orchestratorEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+  name: 'documents-event-subscription'
+  scope: resourceGroup
+  params: {
+    name: 'documents-event-subscription-${resourceToken}'
+    systemTopicName: storageEventGrid.outputs.name
+    functionAppId: orchestrator.outputs.id
+    functionName: 'EventGridTrigger'
+    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+    subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/'
+    fileExtensions: ['.pdf', '.docx', '.doc', '.txt', '.md', '.html', '.pptx']
   }
 }
 
