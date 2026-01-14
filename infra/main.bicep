@@ -388,7 +388,7 @@ param storageUserDocumentsContainerName string = 'user-documents'
 @description(' Name of the container where test images will be stored.')
 param storageTestImagesContainerName string = 'ragindex-test-images'
 
-@description('Name of the container where the customer pulse files will be stored.')
+@description('Name of the container where the consumer pulse files will be stored.')
 param storageSurveyConsumerContainerName string = 'survey-data'
 
 @description('Name of the container where survey json will be stored.')
