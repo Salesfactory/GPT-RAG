@@ -972,6 +972,7 @@ module orchestrator './core/host/functions.bicep' = {
     numberOfWorkers: 2
     minimumElasticInstanceCount: 1
     allowedOrigins: ['*']
+    healthCheckPath: '/api/health'
     appSettings: [
       {
         name: 'PYTHON_ENABLE_INIT_INDEXING'
@@ -1560,6 +1561,7 @@ module dataIngestion './core/host/functions.bicep' = {
     allowedOrigins: ['*']
     functionAppScaleLimit: 1
     minimumElasticInstanceCount: 1
+    healthCheckPath: '/api/health'
     numberOfWorkers: 1
     appSettings: [
       {
@@ -1890,6 +1892,7 @@ module mcpServer './core/host/functions.bicep' = {
     allowedOrigins: ['*']
     functionAppScaleLimit: 2
     minimumElasticInstanceCount: 1
+    healthCheckPath: '/api/health'
     numberOfWorkers: 2
     appSettings: [
       {
@@ -1981,21 +1984,6 @@ module storageEventGrid './core/eventgrid/eventgrid-system-topic.bicep' = {
   }
 }
 
-// Event Grid Subscription for MCP Function
-module mcpEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
-  name: 'org-files-event-subscription'
-  scope: resourceGroup
-  params: {
-    name: 'org-files-event-subscription-${resourceToken}'
-    systemTopicName: storageEventGrid.outputs.name
-    functionAppId: mcpServer.outputs.id
-    functionName: 'EventGridTrigger'
-    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
-    subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/organization_files/'
-    fileExtensions: ['.xlsx', '.xls', '.csv']
-  }
-}
-
 // Event Grid Subscription for Data Ingestion Function (JSON files)
 module ingestEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
   name: 'ingest-json-event-subscription'
@@ -2023,6 +2011,21 @@ module orchestratorEventSubscription './core/eventgrid/eventgrid-subscription.bi
     eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
     subjectBeginsWith: '/blobServices/default/containers/${containerName}/blobs/'
     fileExtensions: ['.pdf', '.docx', '.doc', '.txt', '.md', '.html', '.pptx']
+  }
+}
+
+// Event Grid Subscription for Pulse Markdown (Markdown files)
+module pulseIndexerEventSubscription './core/eventgrid/eventgrid-subscription.bicep' = {
+  name: 'markdown-indexer-event-subscription'
+  scope: resourceGroup
+  params: {
+    name: 'markdown-indexer-subscription-${resourceToken}'
+    systemTopicName: storageEventGrid.outputs.name
+    functionAppId: dataIngestion.outputs.id
+    functionName: 'EventGridTriggerSurveyMarkdownIndexer'
+    eventTypes: ['Microsoft.Storage.BlobCreated', 'Microsoft.Storage.BlobDeleted']
+    subjectBeginsWith: '/blobServices/default/containers/survey-markdown/blobs/'
+    fileExtensions: ['.md', '.txt']
   }
 }
 
