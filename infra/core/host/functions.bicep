@@ -14,7 +14,7 @@ param kind string = 'functionapp,linux'
 param functionAppScaleLimit int = -1
 param minimumElasticInstanceCount int = 1
 param numberOfWorkers int = -1
-param runtimeName string =  'python'
+param runtimeName string = 'python'
 param runtimeVersion string = '3.10'
 param use32BitWorkerProcess bool = false
 param healthCheckPath string = ''
@@ -49,8 +49,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   sku: {
     name: storageAccountType
   }
-  kind: 'Storage'
+  kind: 'StorageV2'
   properties: {
+    minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false // Disable anonymous access 
     supportsHttpsTrafficOnly: true
     defaultToOAuthAuthentication: true
@@ -80,10 +81,10 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       appCommandLine: appCommandLine
       numberOfWorkers: numberOfWorkers
       minimumElasticInstanceCount: minimumElasticInstanceCount
-      use32BitWorkerProcess: use32BitWorkerProcess      
+      use32BitWorkerProcess: use32BitWorkerProcess
       functionAppScaleLimit: functionAppScaleLimit
       healthCheckPath: healthCheckPath
-      appSettings: concat(appSettings,[
+      appSettings: concat(appSettings, [
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
@@ -118,14 +119,14 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
         }
       ])
       cors: {
-        allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
-      }      
+        allowedOrigins: union(['https://portal.azure.com', 'https://ms.portal.azure.com'], allowedOrigins)
+      }
     }
   }
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = if (!(empty(keyVaultName))) {
- name: keyVaultName
+  name: keyVaultName
 }
 
 output identityPrincipalId string = functionApp.identity.principalId
