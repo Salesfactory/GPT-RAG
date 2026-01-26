@@ -588,11 +588,6 @@ var orchestratorAnthropicApiKeyVar = !empty(orchestratorAnthropicApiKey) ? orche
 param mcpOpenAiApiKey string = ''
 var mcpOpenAiApiKeyVar = !empty(mcpOpenAiApiKey) ? mcpOpenAiApiKey : ''
 
-@description('OpenAI API Key used by the orchestrator.')
-@secure()
-param orchestratorOpenAiApiKey string = ''
-var orchestratorOpenAiApiKeyVar = !empty(orchestratorOpenAiApiKey) ? orchestratorOpenAiApiKey : ''
-
 @description('Langsmith API Key for tracing')
 @secure()
 param langsmithApiKey string = ''
@@ -1088,7 +1083,7 @@ module orchestrator './core/host/functions.bicep' = {
       }
       {
         name: 'OPENAI_API_KEY'
-        value: orchestratorOpenAiApiKeyVar
+        value: mcpOpenAiApiKeyVar
       }
     ]
   }
