@@ -161,6 +161,9 @@
     "mcpOpenAiApiKey": {
       "value": "${OPENAI_API_KEY}"
     },
+    "orchestratorOpenAiApiKey": {
+      "value": "${OPENAI_API_KEY}"
+    },
     "mcpAzureSearchIndex": {
       "value": "${AZURE_SEARCH_INDEX}"
     },
