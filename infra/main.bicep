@@ -388,6 +388,9 @@ param storageUserDocumentsContainerName string = 'user-documents'
 @description(' Name of the container where test images will be stored.')
 param storageTestImagesContainerName string = 'ragindex-test-images'
 
+@description('Name of the container where the consumer pulse files will be stored.')
+param storageSurveyConsumerContainerName string = 'survey-data'
+
 @description('Name of the container where survey json will be stored.')
 param storageSurveyJsonContainerName string = 'survey-json-intermediate'
 
@@ -639,6 +642,10 @@ var brandAnalysisModelVar = !empty(brandAnalysisModel) ? brandAnalysisModel : ''
 param reasoningEffortReport string = ''
 var reasoningEffortReportVar = !empty(reasoningEffortReport) ? reasoningEffortReport : ''
 
+@description('Cron schedule for report generation')
+param reportScheduleCron string = ''
+var reportScheduleCronVar = !empty(reportScheduleCron) ? reportScheduleCron : ''
+
 // MCP Function app
 @description('Logging Verbosity')
 var loggingVerbosity = 'false'
@@ -791,6 +798,7 @@ module storage './core/storage/storage-account.bicep' = {
       { name: storageUserDocumentsContainerName, publicAccess: 'None' }
       { name: storageFinancialAgentContainerName, publicAccess: 'None' }
       { name: storageTestImagesContainerName, publicAccess: 'None' }
+      { name: storageSurveyConsumerContainerName, publicAccess: 'None' }
       { name: storageSurveyJsonContainerName, publicAccess: 'None' }
       { name: storageSurveyMarkdownContainerName, publicAccess: 'None' }
     ]
@@ -809,6 +817,30 @@ module reportJobsQueue './core/storage/queue-service.bicep' = {
   params: {
     storageAccountName: storageAccountName
     queueName: 'report-jobs'
+  }
+}
+
+module orchestratorReportProcessingQueue './core/storage/queue-service.bicep' = {
+  name: 'orchestrator-queue-report-processing'
+  scope: resourceGroup
+  params: {
+    storageAccountName: '${storageAccountName}orc'
+    queueName: 'report-processing'
+    metadata: {
+      purpose: 'Report processing tasks for orchestrator'
+    }
+  }
+}
+
+module orchestratorReportProcessingPoisonQueue './core/storage/queue-service.bicep' = {
+  name: 'orchestrator-queue-report-processing-poison'
+  scope: resourceGroup
+  params: {
+    storageAccountName: '${storageAccountName}orc'
+    queueName: 'report-processing-poison'
+    metadata: {
+      purpose: 'Poison queue for failed report processing messages'
+    }
   }
 }
 
@@ -1090,6 +1122,14 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'REASONING_EFFORT'
         value: reasoningEffortReportVar
+      }
+      {
+        name: 'REPORT_SCHEDULE_CRON'
+        value: reportScheduleCronVar
+      }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKeyVar
       }
     ]
   }

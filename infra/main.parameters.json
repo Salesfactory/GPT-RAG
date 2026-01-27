@@ -209,6 +209,9 @@
     "reasoningEffortReport": {
       "value": "${REASONING_EFFORT}"
     },
+    "reportScheduleCron": {
+      "value": "${REPORT_SCHEDULE_CRON}"
+    },
     "webAppUserFeedbackUrl": {
       "value": "${USER_FEEDBACK_URL}"
     }

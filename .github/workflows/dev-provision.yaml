@@ -83,6 +83,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           BRAND_ANALYSIS_MODEL: ${{ secrets.BRAND_ANALYSIS_MODEL }}
           REASONING_EFFORT: ${{ secrets.REASONING_EFFORT }}
+          REPORT_SCHEDULE_CRON: ${{ secrets.REPORT_SCHEDULE_CRON }}
 
           # LangSmith Settings
           LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
