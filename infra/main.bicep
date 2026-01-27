@@ -1095,6 +1095,10 @@ module orchestrator './core/host/functions.bicep' = {
         name: 'REASONING_EFFORT'
         value: reasoningEffortReportVar
       }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKeyVar
+      }
     ]
   }
 }
