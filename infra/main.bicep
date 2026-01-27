@@ -642,6 +642,10 @@ var brandAnalysisModelVar = !empty(brandAnalysisModel) ? brandAnalysisModel : ''
 param reasoningEffortReport string = ''
 var reasoningEffortReportVar = !empty(reasoningEffortReport) ? reasoningEffortReport : ''
 
+@description('Cron schedule for report generation')
+param reportScheduleCron string = ''
+var reportScheduleCronVar = !empty(reportScheduleCron) ? reportScheduleCron : ''
+
 // MCP Function app
 @description('Logging Verbosity')
 var loggingVerbosity = 'false'
@@ -1094,6 +1098,10 @@ module orchestrator './core/host/functions.bicep' = {
       {
         name: 'REASONING_EFFORT'
         value: reasoningEffortReportVar
+      }
+      {
+        name: 'REPORT_SCHEDULE_CRON'
+        value: reportScheduleCronVar
       }
     ]
   }
