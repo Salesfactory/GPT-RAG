@@ -820,6 +820,30 @@ module reportJobsQueue './core/storage/queue-service.bicep' = {
   }
 }
 
+module orchestratorReportProcessingQueue './core/storage/queue-service.bicep' = {
+  name: 'orchestrator-queue-report-processing'
+  scope: resourceGroup
+  params: {
+    storageAccountName: '${storageAccountName}orc'
+    queueName: 'report-processing'
+    metadata: {
+      purpose: 'Report processing tasks for orchestrator'
+    }
+  }
+}
+
+module orchestratorReportProcessingPoisonQueue './core/storage/queue-service.bicep' = {
+  name: 'orchestrator-queue-report-processing-poison'
+  scope: resourceGroup
+  params: {
+    storageAccountName: '${storageAccountName}orc'
+    queueName: 'report-processing-poison'
+    metadata: {
+      purpose: 'Poison queue for failed report processing messages'
+    }
+  }
+}
+
 module storagepe './core/network/private-endpoint.bicep' = if (networkIsolation) {
   name: 'storagepe'
   scope: resourceGroup
