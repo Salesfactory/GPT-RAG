@@ -1127,6 +1127,10 @@ module orchestrator './core/host/functions.bicep' = {
         name: 'REPORT_SCHEDULE_CRON'
         value: reportScheduleCronVar
       }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKeyVar
+      }
     ]
   }
 }
