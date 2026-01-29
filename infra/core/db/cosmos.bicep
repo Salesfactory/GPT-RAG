@@ -480,6 +480,21 @@ resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
   }
 }
 
+resource orgSpreedsheets 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'OrgSpreadsheets'
+  properties: {
+    resource: {
+      id: 'OrgSpreadsheets'
+      partitionKey: {
+        paths: ['/organizationId']
+        kind: 'Hash'
+      }
+    }
+    options: {}
+  }
+}
+
 resource userLogscontainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'userLogs'
