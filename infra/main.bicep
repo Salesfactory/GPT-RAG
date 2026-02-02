@@ -1512,6 +1512,10 @@ module frontEnd 'core/host/appservice.bicep' = {
         name: 'USER_FEEDBACK_URL'
         value: userFeedbackUrl
       } 
+      {
+        name: 'ANTHROPIC_API_KEY'
+        value: orchestratorAnthropicApiKeyVar
+      }
     ]
   }
 }
