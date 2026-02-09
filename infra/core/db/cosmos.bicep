@@ -480,6 +480,19 @@ resource organizationsUsagecontainer 'Microsoft.DocumentDB/databaseAccounts/sqlD
   }
 }
 
+
+resource notifications 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  parent: database
+  name: 'notifications'
+  properties: {
+    resource: {
+      id: 'notifications'
+    }
+    options: {}
+  }
+}
+
+
 resource userLogscontainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
   parent: database
   name: 'userLogs'
