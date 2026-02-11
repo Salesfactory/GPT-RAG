@@ -84,7 +84,7 @@ jobs:
           BRAND_ANALYSIS_MODEL: ${{ secrets.BRAND_ANALYSIS_MODEL }}
           REASONING_EFFORT: ${{ secrets.REASONING_EFFORT }}
           REPORT_SCHEDULE_CRON: ${{ secrets.REPORT_SCHEDULE_CRON }}
-          CLEANUP_INDEX_CONTAINER_MAP: ${{ replace(secrets.CLEANUP_INDEX_CONTAINER_MAP, '"', '\\"') }}
+          CLEANUP_INDEX_CONTAINER_MAP: ${{ secrets.CLEANUP_INDEX_CONTAINER_MAP }}
           CLEANUP_INDEX_DRY_RUN: ${{ secrets.CLEANUP_INDEX_DRY_RUN }}
           CLEANUP_INDEX_CRON_JOB: ${{ secrets.CLEANUP_INDEX_CRON_JOB }}
 
