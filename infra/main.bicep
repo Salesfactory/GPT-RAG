@@ -646,6 +646,18 @@ var reasoningEffortReportVar = !empty(reasoningEffortReport) ? reasoningEffortRe
 param reportScheduleCron string = ''
 var reportScheduleCronVar = !empty(reportScheduleCron) ? reportScheduleCron : ''
 
+@description('Container to search-index map for the ingestion cleanup job')
+param cleanupIndexContainerMap string = ''
+var cleanupIndexContainerMapVar = !empty(cleanupIndexContainerMap) ? cleanupIndexContainerMap : ''
+
+@description('Dry-run flag for the ingestion cleanup job')
+param cleanupIndexDryRun string = ''
+var cleanupIndexDryRunVar = !empty(cleanupIndexDryRun) ? cleanupIndexDryRun : ''
+
+@description('Cron schedule for the ingestion cleanup job')
+param cleanupIndexCronJob string = ''
+var cleanupIndexCronJobVar = !empty(cleanupIndexCronJob) ? cleanupIndexCronJob : ''
+
 // MCP Function app
 @description('Logging Verbosity')
 var loggingVerbosity = 'false'
@@ -1675,6 +1687,18 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name:'COGNITIVE_SERVICES_KEY'
         value: cognitiveServices.outputs.key
+      }
+      {
+        name: 'CLEANUP_INDEX_CONTAINER_MAP'
+        value: cleanupIndexContainerMapVar
+      }
+      {
+        name: 'CLEANUP_INDEX_DRY_RUN'
+        value: cleanupIndexDryRunVar
+      }
+      {
+        name: 'CLEANUP_INDEX_CRON_JOB'
+        value: cleanupIndexCronJobVar
       }
       {
         name: 'OPENAI_API_KEY'
