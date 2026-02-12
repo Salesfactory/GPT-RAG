@@ -212,6 +212,15 @@
     "reportScheduleCron": {
       "value": "${REPORT_SCHEDULE_CRON}"
     },
+    "cleanupIndexContainerMap": {
+      "value": "${CLEANUP_INDEX_CONTAINER_MAP}"
+    },
+    "cleanupIndexDryRun": {
+      "value": "${CLEANUP_INDEX_DRY_RUN}"
+    },
+    "cleanupIndexCronJob": {
+      "value": "${CLEANUP_INDEX_CRON_JOB}"
+    },
     "webAppUserFeedbackUrl": {
       "value": "${USER_FEEDBACK_URL}"
     }
