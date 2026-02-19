@@ -977,7 +977,7 @@ module sqlServer './core/db/sqlserver.bicep' = {
   scope: resourceGroup
   params: {
     name: sqlServerName
-    location: location
+    location: 'eastus2'
     tags: tags
     administratorLogin: azureSqlAdministratorLogin
     administratorLoginPassword: azureSqlAdministratorPassword
