@@ -406,9 +406,27 @@ var dbAccountName = !empty(azureDbAccountName) ? azureDbAccountName : 'dbgpt0-${
 @description('Cosmos DB Database Name. Use your own name convention or leave as it is to generate a random name.')
 param azureDbDatabaseName string = ''
 var dbDatabaseName = !empty(azureDbDatabaseName) ? azureDbDatabaseName : 'db0-${resourceToken}'
+@description('Azure SQL Server Name.')
+param azureSqlServerName string = ''
+var sqlServerName = !empty(azureSqlServerName) ? azureSqlServerName : 'sqlgpt0-${resourceToken}'
+@description('Azure SQL Database Name.')
+param azureSqlDatabaseName string = ''
+var sqlDatabaseName = !empty(azureSqlDatabaseName) ? azureSqlDatabaseName : 'sqldb0-${resourceToken}'
+@description('Azure SQL administrator login name.')
+param azureSqlAdministratorLogin string = ''
+@description('Azure SQL administrator password.')
+@secure()
+param azureSqlAdministratorPassword string
+@description('Key Vault secret name to store the Azure SQL administrator password.')
+param azureSqlAdminSecretName string = ''
+@description('Public network access setting for Azure SQL Server.')
+@allowed(['Enabled', 'Disabled'])
+param azureSqlPublicNetworkAccess string = 'Enabled'
 @description('Log Analytics Workspace Name. Use your own name convention or leave as it is to generate a random name.')
 param azureLogAnalyticsWorkspaceName string = ''
-var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName) ? azureLogAnalyticsWorkspaceName : 'law0-${resourceToken}'
+var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName)
+  ? azureLogAnalyticsWorkspaceName
+  : 'law0-${resourceToken}'
 @description('Enable PartitionKeyRUConsumption logs for multi-tenant billing')
 param enablePartitionKeyRUConsumption bool = true
 @description('Key Vault Name. Use your own name convention or leave as it is to generate a random name.')
@@ -951,6 +969,22 @@ module keyVault './core/security/keyvault.bicep' = {
     // this is the named of the secret to store the vm password in keyvault. It matches what is used on main.parameters.json
     vmUserPasswordKey: vmKeyVaultSecName
     vmUserPassword: vmUserInitialPassword
+  }
+}
+
+module sqlServer './core/db/sqlserver.bicep' = {
+  name: 'sqlserver'
+  scope: resourceGroup
+  params: {
+    name: sqlServerName
+    location: 'eastus2'
+    tags: tags
+    administratorLogin: azureSqlAdministratorLogin
+    administratorLoginPassword: azureSqlAdministratorPassword
+    databaseName: sqlDatabaseName
+    keyVaultName: keyVault.outputs.name
+    publicNetworkAccess: azureSqlPublicNetworkAccess
+    secretName: azureSqlAdminSecretName
   }
 }
 
@@ -1523,7 +1557,7 @@ module frontEnd 'core/host/appservice.bicep' = {
       {
         name: 'USER_FEEDBACK_URL'
         value: userFeedbackUrl
-      } 
+      }
       {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
@@ -1649,7 +1683,7 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'text-embedding-3-small'
       }
       {
-        name:'FORM_REC_API_VERSION'
+        name: 'FORM_REC_API_VERSION'
         value: '2024-11-30'
       }
       {
@@ -1685,7 +1719,7 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'INFO'
       }
       {
-        name:'COGNITIVE_SERVICES_KEY'
+        name: 'COGNITIVE_SERVICES_KEY'
         value: cognitiveServices.outputs.key
       }
       {
@@ -2118,6 +2152,8 @@ output AZURE_RESOURCE_GROUP_NAME string = azureResourceGroupName
 output AZURE_NETWORK_ISOLATION bool = networkIsolation
 output AZURE_DB_ACCOUNT_NAME string = azureDbAccountName
 output AZURE_DB_DATABASE_NAME string = azureDbDatabaseName
+output AZURE_SQL_SERVER_NAME string = sqlServerName
+output AZURE_SQL_DATABASE_NAME string = sqlDatabaseName
 output AZURE_STORAGE_ACCOUNT_NAME string = storageAccountName
 output AZURE_COGNITIVE_SERVICE_NAME string = azureCognitiveServiceName
 output AZURE_APP_SERVICE_PLAN_NAME string = azureAppServicePlanName

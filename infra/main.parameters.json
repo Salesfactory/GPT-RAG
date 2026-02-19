@@ -50,6 +50,24 @@
     "azureDbDatabaseName": {
       "value": "${AZURE_DB_DATABASE_NAME}"
     },
+    "azureSqlServerName": {
+      "value": ""
+    },
+    "azureSqlDatabaseName": {
+      "value": ""
+    },
+    "azureSqlAdministratorLogin": {
+      "value": "${AZURE_SQL_ADMIN_LOGIN}"
+    },
+    "azureSqlAdministratorPassword": {
+      "value": "$(secretOrRandomPassword ${AZURE_KEY_VAULT_NAME} ${AZURE_SQL_ADMIN_SECRET_NAME})"
+    },
+    "azureSqlAdminSecretName": {
+      "value": "${AZURE_SQL_ADMIN_SECRET_NAME}"
+    },
+    "azureSqlPublicNetworkAccess": {
+      "value": "${AZURE_SQL_PUBLIC_NETWORK_ACCESS=Enabled}"
+    },
     "azureLogAnalyticsWorkspaceName": {
       "value": "${AZURE_LOG_ANALYTICS_WORKSPACE_NAME}"
     },
