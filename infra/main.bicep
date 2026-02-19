@@ -413,12 +413,12 @@ var sqlServerName = !empty(azureSqlServerName) ? azureSqlServerName : 'sqlgpt0-$
 param azureSqlDatabaseName string = ''
 var sqlDatabaseName = !empty(azureSqlDatabaseName) ? azureSqlDatabaseName : 'sqldb0-${resourceToken}'
 @description('Azure SQL administrator login name.')
-param azureSqlAdministratorLogin string = 'sqladmin'
+param azureSqlAdministratorLogin string = ''
 @description('Azure SQL administrator password.')
 @secure()
 param azureSqlAdministratorPassword string
 @description('Key Vault secret name to store the Azure SQL administrator password.')
-param azureSqlAdminSecretName string = 'sqlAdminPassword'
+param azureSqlAdminSecretName string = ''
 @description('Public network access setting for Azure SQL Server.')
 @allowed(['Enabled', 'Disabled'])
 param azureSqlPublicNetworkAccess string = 'Enabled'
