@@ -658,6 +658,19 @@ var cleanupIndexDryRunVar = !empty(cleanupIndexDryRun) ? cleanupIndexDryRun : ''
 param cleanupIndexCronJob string = ''
 var cleanupIndexCronJobVar = !empty(cleanupIndexCronJob) ? cleanupIndexCronJob : ''
 
+// Google Drive Pro-Pulse
+@description('Google Drive Propulse Surveys')
+param googleDriveSurveyFolder string = ''
+var googleDriveSurveyFolderVar = !empty(googleDriveSurveyFolder) ? googleDriveSurveyFolder : ''
+
+@description('Google Drive Propulse Members Folder')
+param googleDriveTppFolder string = ''
+var googleDriveTppFolderVar = !empty(googleDriveTppFolder) ? googleDriveTppFolder : ''
+
+
+
+
+
 // MCP Function app
 @description('Logging Verbosity')
 var loggingVerbosity = 'false'
@@ -1703,6 +1716,14 @@ module dataIngestion './core/host/functions.bicep' = {
       {
         name: 'OPENAI_API_KEY'
         value: mcpOpenAiApiKeyVar
+      }
+      {
+        name: 'GDRIVE_SOURCE_SURVEY_FOLDER_ID'
+        value: googleDriveSurveyFolderVar
+      }
+            {
+        name: 'GDRIVE_TPP_MEMBERS_FOLDER_ID'
+        value: googleDriveTppFolderVar
       }
     ]
   }
