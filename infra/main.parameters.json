@@ -223,6 +223,12 @@
     },
     "webAppUserFeedbackUrl": {
       "value": "${USER_FEEDBACK_URL}"
-    }
+    },
+    "googleDriveSurveyFolder":{
+      "value": "${GDRIVE_SOURCE_SURVEY_FOLDER_ID}"
+    },
+        "googleDriveTppFolder":{
+      "value": "${GDRIVE_TPP_MEMBERS_FOLDER_ID}"
+    } 
   }
 }
