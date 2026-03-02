@@ -579,6 +579,18 @@ var mcpAzureSearchIndexVar = !empty(mcpAzureSearchIndex) ? mcpAzureSearchIndex :
 param mcpUserDataContainer string = ''
 var mcpUserDataContainerVar = !empty(mcpUserDataContainer) ? mcpUserDataContainer : ''
 
+@description('Pulse SQL Server for MCP function app')
+param pulseSqlServer string = ''
+var pulseSqlServerVar = !empty(pulseSqlServer) ? pulseSqlServer : ''
+
+@description('Pulse SQL Database for MCP function app')
+param pulseSqlDatabase string = ''
+var pulseSqlDatabaseVar = !empty(pulseSqlDatabase) ? pulseSqlDatabase : ''
+
+@description('Pulse SQL Table for MCP function app')
+param pulseSqlTable string = ''
+var pulseSqlTableVar = !empty(pulseSqlTable) ? pulseSqlTable : ''
+
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
 // ---------------------------------------------------------------------
@@ -1990,6 +2002,18 @@ module mcpServer './core/host/functions.bicep' = {
       {
         name: 'USER_DATA_CONTAINER'
         value: mcpUserDataContainerVar
+      }
+      {
+        name: 'SQL_SERVER'
+        value: pulseSqlServerVar
+      }
+      {
+        name: 'SQL_DATABASE'
+        value: pulseSqlDatabaseVar
+      }
+      {
+        name: 'SQL_TABLE'
+        value: pulseSqlTableVar
       }
       {
         name: 'AZURE_OPENAI_ENDPOINT'
