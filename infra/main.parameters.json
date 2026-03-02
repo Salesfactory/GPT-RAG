@@ -101,6 +101,15 @@
     "stripeSigningSecret": {
       "value": "${STRIPE_SIGNING_SECRET}"
     },
+    "googleClientId": {
+      "value": "${GOOGLE_CLIENT_ID}"
+    },
+    "googleClientSecret": {
+      "value": "${GOOGLE_CLIENT_SECRET}"
+    },
+    "googleRedirectUri": {
+      "value": "${GOOGLE_REDIRECT_URI}"
+    },
     "webAppStripeProductId": {
       "value": "${STRIPE_PRODUCT_ID}"
     },

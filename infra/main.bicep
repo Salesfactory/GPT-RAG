@@ -408,7 +408,9 @@ param azureDbDatabaseName string = ''
 var dbDatabaseName = !empty(azureDbDatabaseName) ? azureDbDatabaseName : 'db0-${resourceToken}'
 @description('Log Analytics Workspace Name. Use your own name convention or leave as it is to generate a random name.')
 param azureLogAnalyticsWorkspaceName string = ''
-var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName) ? azureLogAnalyticsWorkspaceName : 'law0-${resourceToken}'
+var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName)
+  ? azureLogAnalyticsWorkspaceName
+  : 'law0-${resourceToken}'
 @description('Enable PartitionKeyRUConsumption logs for multi-tenant billing')
 param enablePartitionKeyRUConsumption bool = true
 @description('Key Vault Name. Use your own name convention or leave as it is to generate a random name.')
@@ -480,6 +482,19 @@ var stripeApiKeyVar = !empty(stripeApiKey) ? stripeApiKey : ''
 @secure()
 param stripeSigningSecret string = ''
 var stripeSigningSecretVar = !empty(stripeSigningSecret) ? stripeSigningSecret : ''
+
+@description('Google OAuth client ID.')
+param googleClientId string = ''
+var googleClientIdVar = !empty(googleClientId) ? googleClientId : ''
+
+@description('Google OAuth client secret.')
+@secure()
+param googleClientSecret string = ''
+var googleClientSecretVar = !empty(googleClientSecret) ? googleClientSecret : ''
+
+@description('Google OAuth redirect URI.')
+param googleRedirectUri string = ''
+var googleRedirectUriVar = !empty(googleRedirectUri) ? googleRedirectUri : ''
 
 @description('Stripe product ID')
 param webAppStripeProductId string = ''
@@ -1366,6 +1381,18 @@ module frontEnd 'core/host/appservice.bicep' = {
         value: stripeSigningSecretVar
       }
       {
+        name: 'GOOGLE_CLIENT_ID'
+        value: googleClientIdVar
+      }
+      {
+        name: 'GOOGLE_CLIENT_SECRET'
+        value: googleClientSecretVar
+      }
+      {
+        name: 'GOOGLE_REDIRECT_URI'
+        value: googleRedirectUriVar
+      }
+      {
         name: 'STRIPE_PRODUCT_ID'
         value: stripeProductId
       }
@@ -1523,7 +1550,7 @@ module frontEnd 'core/host/appservice.bicep' = {
       {
         name: 'USER_FEEDBACK_URL'
         value: userFeedbackUrl
-      } 
+      }
       {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
@@ -1649,7 +1676,7 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'text-embedding-3-small'
       }
       {
-        name:'FORM_REC_API_VERSION'
+        name: 'FORM_REC_API_VERSION'
         value: '2024-11-30'
       }
       {
@@ -1685,7 +1712,7 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'INFO'
       }
       {
-        name:'COGNITIVE_SERVICES_KEY'
+        name: 'COGNITIVE_SERVICES_KEY'
         value: cognitiveServices.outputs.key
       }
       {
