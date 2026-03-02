@@ -100,6 +100,9 @@ jobs:
           CODE_EXECUTION_MODEL: ${{ secrets.CODE_EXECUTION_MODEL }}
           AZURE_SEARCH_INDEX: ${{ secrets.AZURE_SEARCH_INDEX }}
           USER_DATA_CONTAINER: ${{ secrets.USER_DATA_CONTAINER }}
+          SQL_SERVER: ${{ secrets.SQL_SERVER }}
+          SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
+          SQL_TABLE: ${{ secrets.SQL_TABLE }}
 
           # User Feedback URL
           USER_FEEDBACK_URL: ${{ secrets.USER_FEEDBACK_URL }}
