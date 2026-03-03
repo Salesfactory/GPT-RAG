@@ -223,6 +223,15 @@
     },
     "webAppUserFeedbackUrl": {
       "value": "${USER_FEEDBACK_URL}"
+    },
+    "pulseSqlServer": {
+      "value": "${SQL_SERVER}"
+    },
+    "pulseSqlDatabase": {
+      "value": "${SQL_DATABASE}"
+    },
+    "pulseSqlTable": {
+      "value": "${SQL_TABLE}"
     }
   }
 }
