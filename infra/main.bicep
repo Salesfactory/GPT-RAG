@@ -594,8 +594,8 @@ var mcpAzureSearchIndexVar = !empty(mcpAzureSearchIndex) ? mcpAzureSearchIndex :
 param mcpUserDataContainer string = ''
 var mcpUserDataContainerVar = !empty(mcpUserDataContainer) ? mcpUserDataContainer : ''
 
-var sqlServerName = 'sql0-${resourceToken}'
-var sqlDatabaseName = 'sqldb0-${resourceToken}'
+var sqlServerName = 'sqlcus0-${resourceToken}'
+var sqlDatabaseName = 'sqldbcus0-${resourceToken}'
 
 @description('SQL Server administrator login (auto-generated password stored in KV)')
 param sqlAdminLogin string = 'sqladmin'
