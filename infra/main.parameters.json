@@ -232,6 +232,15 @@
     },
     "webAppUserFeedbackUrl": {
       "value": "${USER_FEEDBACK_URL}"
+    },
+    "sqlAdminLogin": {
+      "value": "${SQL_ADMIN_LOGIN=sqladmin}"
+    },
+    "sqlAdminPassword": {
+      "value": "$(secretOrRandomPassword ${AZURE_KEY_VAULT_NAME} sqlAdminPassword)"
+    },
+    "pulseSqlTable": {
+      "value": "${SQL_TABLE}"
     }
   }
 }

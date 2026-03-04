@@ -594,15 +594,17 @@ var mcpAzureSearchIndexVar = !empty(mcpAzureSearchIndex) ? mcpAzureSearchIndex :
 param mcpUserDataContainer string = ''
 var mcpUserDataContainerVar = !empty(mcpUserDataContainer) ? mcpUserDataContainer : ''
 
-@description('Pulse SQL Server for MCP function app')
-param pulseSqlServer string = ''
-var pulseSqlServerVar = !empty(pulseSqlServer) ? pulseSqlServer : ''
+var sqlServerName = 'sql0-${resourceToken}'
+var sqlDatabaseName = 'sqldb0-${resourceToken}'
 
-@description('Pulse SQL Database for MCP function app')
-param pulseSqlDatabase string = ''
-var pulseSqlDatabaseVar = !empty(pulseSqlDatabase) ? pulseSqlDatabase : ''
+@description('SQL Server administrator login (auto-generated password stored in KV)')
+param sqlAdminLogin string = 'sqladmin'
 
-@description('Pulse SQL Table for MCP function app')
+@description('SQL Server administrator password — auto-generated, stored in KV, not used by app')
+@secure()
+param sqlAdminPassword string
+
+@description('SQL Table name for MCP function app')
 param pulseSqlTable string = ''
 var pulseSqlTableVar = !empty(pulseSqlTable) ? pulseSqlTable : ''
 
@@ -995,6 +997,23 @@ module keyvaultpe './core/network/private-endpoint.bicep' = if (networkIsolation
   }
 }
 
+// SQL Server for MCP function app
+module sqlServer './core/db/sqlserver.bicep' = {
+  name: 'sqlserver'
+  scope: resourceGroup
+  params: {
+    name: sqlServerName
+    location: location
+    tags: tags
+    administratorLogin: sqlAdminLogin
+    administratorLoginPassword: sqlAdminPassword
+    databaseName: sqlDatabaseName
+    keyVaultName: keyVault.outputs.name
+    secretName: 'sqlAdminPassword'
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
 // Create an App Service Plan
 module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
@@ -1306,6 +1325,27 @@ module mcpServerCosmosAccess './core/security/cosmos-access.bicep' = {
   params: {
     principalId: mcpServer.outputs.identityPrincipalId
     accountName: cosmosAccount.outputs.name
+  }
+}
+
+// SQL DB Contributor (control plane) for MCP function's managed identity
+module mcpServerSqlAccess './core/security/sqlserver-access.bicep' = {
+  name: 'mcp-server-sql-access'
+  scope: resourceGroup
+  params: {
+    sqlServerName: sqlServer.outputs.name
+    principalId: mcpServer.outputs.identityPrincipalId
+  }
+}
+
+// Set MCP function's managed identity as the SQL Azure AD admin (data plane access)
+module mcpServerSqlAdminAccess './core/security/sql-aad-access.bicep' = {
+  name: 'mcp-server-sql-aad-access'
+  scope: resourceGroup
+  params: {
+    sqlServerName: sqlServer.outputs.name
+    aadAdminLogin: mcpServerFunctionAppName
+    aadAdminObjectId: mcpServer.outputs.identityPrincipalId
   }
 }
 
@@ -2032,11 +2072,11 @@ module mcpServer './core/host/functions.bicep' = {
       }
       {
         name: 'SQL_SERVER'
-        value: pulseSqlServerVar
+        value: sqlServer.outputs.serverFullyQualifiedDomainName
       }
       {
         name: 'SQL_DATABASE'
-        value: pulseSqlDatabaseVar
+        value: sqlServer.outputs.databaseName
       }
       {
         name: 'SQL_TABLE'
