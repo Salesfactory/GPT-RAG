@@ -1003,7 +1003,7 @@ module sqlServer './core/db/sqlserver.bicep' = {
   scope: resourceGroup
   params: {
     name: sqlServerName
-    location: 'centralus'
+    location: 'eastus2'
     tags: tags
     administratorLogin: sqlAdminLogin
     administratorLoginPassword: sqlAdminPassword
