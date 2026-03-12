@@ -408,7 +408,9 @@ param azureDbDatabaseName string = ''
 var dbDatabaseName = !empty(azureDbDatabaseName) ? azureDbDatabaseName : 'db0-${resourceToken}'
 @description('Log Analytics Workspace Name. Use your own name convention or leave as it is to generate a random name.')
 param azureLogAnalyticsWorkspaceName string = ''
-var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName) ? azureLogAnalyticsWorkspaceName : 'law0-${resourceToken}'
+var logAnalyticsWorkspaceName = !empty(azureLogAnalyticsWorkspaceName)
+  ? azureLogAnalyticsWorkspaceName
+  : 'law0-${resourceToken}'
 @description('Enable PartitionKeyRUConsumption logs for multi-tenant billing')
 param enablePartitionKeyRUConsumption bool = true
 @description('Key Vault Name. Use your own name convention or leave as it is to generate a random name.')
@@ -480,6 +482,19 @@ var stripeApiKeyVar = !empty(stripeApiKey) ? stripeApiKey : ''
 @secure()
 param stripeSigningSecret string = ''
 var stripeSigningSecretVar = !empty(stripeSigningSecret) ? stripeSigningSecret : ''
+
+@description('Google OAuth client ID.')
+param googleClientId string = ''
+var googleClientIdVar = !empty(googleClientId) ? googleClientId : ''
+
+@description('Google OAuth client secret.')
+@secure()
+param googleClientSecret string = ''
+var googleClientSecretVar = !empty(googleClientSecret) ? googleClientSecret : ''
+
+@description('Google OAuth redirect URI.')
+param googleRedirectUri string = ''
+var googleRedirectUriVar = !empty(googleRedirectUri) ? googleRedirectUri : ''
 
 @description('Stripe product ID')
 param webAppStripeProductId string = ''
@@ -578,6 +593,20 @@ var mcpAzureSearchIndexVar = !empty(mcpAzureSearchIndex) ? mcpAzureSearchIndex :
 @description('User data container for MCP function app')
 param mcpUserDataContainer string = ''
 var mcpUserDataContainerVar = !empty(mcpUserDataContainer) ? mcpUserDataContainer : ''
+
+var sqlServerName = 'sqlcus0-${resourceToken}'
+var sqlDatabaseName = 'sqldbcus0-${resourceToken}'
+
+@description('SQL Server administrator login (auto-generated password stored in KV)')
+param sqlAdminLogin string = 'sqladmin'
+
+@description('SQL Server administrator password — auto-generated, stored in KV, not used by app')
+@secure()
+param sqlAdminPassword string
+
+@description('SQL Table name for MCP function app')
+param pulseSqlTable string = ''
+var pulseSqlTableVar = !empty(pulseSqlTable) ? pulseSqlTable : ''
 
 // ---------------------------------------------------------------------
 // ADDITIONAL PARAMETERS FOR THE ORCHESTRATOR SETTINGS (REFACTORED)
@@ -968,6 +997,23 @@ module keyvaultpe './core/network/private-endpoint.bicep' = if (networkIsolation
   }
 }
 
+// SQL Server for MCP function app
+module sqlServer './core/db/sqlserver.bicep' = {
+  name: 'sqlserver'
+  scope: resourceGroup
+  params: {
+    name: sqlServerName
+    location: 'eastus2'
+    tags: tags
+    administratorLogin: sqlAdminLogin
+    administratorLoginPassword: sqlAdminPassword
+    databaseName: sqlDatabaseName
+    keyVaultName: keyVault.outputs.name
+    secretName: 'sqlAdminPassword'
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
 // Create an App Service Plan
 module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
@@ -1282,6 +1328,27 @@ module mcpServerCosmosAccess './core/security/cosmos-access.bicep' = {
   }
 }
 
+// SQL DB Contributor (control plane) for MCP function's managed identity
+module mcpServerSqlAccess './core/security/sqlserver-access.bicep' = {
+  name: 'mcp-server-sql-access'
+  scope: resourceGroup
+  params: {
+    sqlServerName: sqlServer.outputs.name
+    principalId: mcpServer.outputs.identityPrincipalId
+  }
+}
+
+// Set MCP function's managed identity as the SQL Azure AD admin (data plane access)
+module mcpServerSqlAdminAccess './core/security/sql-aad-access.bicep' = {
+  name: 'mcp-server-sql-aad-access'
+  scope: resourceGroup
+  params: {
+    sqlServerName: sqlServer.outputs.name
+    aadAdminLogin: mcpServerFunctionAppName
+    aadAdminObjectId: mcpServer.outputs.identityPrincipalId
+  }
+}
+
 // Give the MCP Resource Token function access to AOAI
 module mcpServerOaiAccess './core/security/openai-access.bicep' = {
   name: 'mcp-server-openai-access'
@@ -1364,6 +1431,18 @@ module frontEnd 'core/host/appservice.bicep' = {
       {
         name: 'STRIPE_SIGNING_SECRET'
         value: stripeSigningSecretVar
+      }
+      {
+        name: 'GOOGLE_CLIENT_ID'
+        value: googleClientIdVar
+      }
+      {
+        name: 'GOOGLE_CLIENT_SECRET'
+        value: googleClientSecretVar
+      }
+      {
+        name: 'GOOGLE_REDIRECT_URI'
+        value: googleRedirectUriVar
       }
       {
         name: 'STRIPE_PRODUCT_ID'
@@ -1523,7 +1602,7 @@ module frontEnd 'core/host/appservice.bicep' = {
       {
         name: 'USER_FEEDBACK_URL'
         value: userFeedbackUrl
-      } 
+      }
       {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
@@ -1649,7 +1728,7 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'text-embedding-3-small'
       }
       {
-        name:'FORM_REC_API_VERSION'
+        name: 'FORM_REC_API_VERSION'
         value: '2024-11-30'
       }
       {
@@ -1685,7 +1764,7 @@ module dataIngestion './core/host/functions.bicep' = {
         value: 'INFO'
       }
       {
-        name:'COGNITIVE_SERVICES_KEY'
+        name: 'COGNITIVE_SERVICES_KEY'
         value: cognitiveServices.outputs.key
       }
       {
@@ -1990,6 +2069,18 @@ module mcpServer './core/host/functions.bicep' = {
       {
         name: 'USER_DATA_CONTAINER'
         value: mcpUserDataContainerVar
+      }
+      {
+        name: 'SQL_SERVER'
+        value: sqlServer.outputs.serverFullyQualifiedDomainName
+      }
+      {
+        name: 'SQL_DATABASE'
+        value: sqlServer.outputs.databaseName
+      }
+      {
+        name: 'SQL_TABLE'
+        value: pulseSqlTableVar
       }
       {
         name: 'AZURE_OPENAI_ENDPOINT'

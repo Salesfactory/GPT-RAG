@@ -99,6 +99,12 @@ jobs:
           CODE_EXECUTION_MODEL: ${{ secrets.CODE_EXECUTION_MODEL }}
           AZURE_SEARCH_INDEX: ${{ secrets.AZURE_SEARCH_INDEX }}
           USER_DATA_CONTAINER: ${{ secrets.USER_DATA_CONTAINER }}
+          SQL_TABLE: ${{ secrets.SQL_TABLE }}
+
+          # Google OAuth
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
 
           # User Feedback URL
           USER_FEEDBACK_URL: ${{ secrets.USER_FEEDBACK_URL }}
