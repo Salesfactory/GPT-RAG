@@ -1607,6 +1607,10 @@ module frontEnd 'core/host/appservice.bicep' = {
         name: 'ANTHROPIC_API_KEY'
         value: orchestratorAnthropicApiKeyVar
       }
+      {
+        name: 'OPENAI_API_KEY'
+        value: mcpOpenAiApiKey
+      }
     ]
   }
 }
